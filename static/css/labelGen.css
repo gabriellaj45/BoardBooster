@@ -1,0 +1,212 @@
+.homeButton, .dropdown {
+    display: block;
+    margin: auto;
+    text-align: center;
+}
+
+.buttonGroup{
+    text-align: center;
+}
+
+#homePage {
+    vertical-align: middle;
+    text-align: center;
+}
+
+#firstStep {
+    display: flex;
+    justify-content: center;
+    vertical-align: middle;
+}
+
+::placeholder {
+  color: red;
+}
+
+
+.submitButton {
+    color: white;
+    background-color: blue;
+}
+
+.imageHelp{
+    width: 20%;
+    outline: 5px dotted green;
+}
+
+
+.helpButton {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+}
+
+/* Tooltip text */
+.imageHelpText {
+  visibility: hidden;
+  width: 400px;
+  height: 250px;
+  text-align: center;
+  border-radius: 6px;
+  font-size: 14px;
+
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+}
+
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.imageHelp:hover .imageHelpText {
+  visibility: visible;
+}
+
+canvas {
+    cursor: crosshair;
+    border: 1px solid #000000;
+}
+
+#theImagetoLabel, #secondStep{
+    display: none;
+}
+
+button {
+    width: 25%;
+    height: 8%;
+    color: white;
+    background-color: blue;
+    border-radius: 8px;
+}
+
+* {
+    font-size: 20px;
+    font-family: "Lucida Console", Monaco, monospace;
+    background-color: lightgrey;
+}
+
+h2, h3{
+    padding: 0px;
+    text-align: center;
+}
+
+
+h1 {
+    text-align: center;
+    color: blue;
+    font-size: 40px;
+}
+
+.soloImage {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.column {
+    float: left;
+}
+
+#headerButton {
+   float: right;
+}
+
+font {
+    font-size: 18px;
+}
+
+#theRegionForm {
+    display: none;
+}
+
+#theSymbolForm {
+    display: none;
+}
+
+.left{
+    width: 55%;
+    height: 100%;
+    text-align: center;
+}
+
+.theLeft{
+    width: 25%;
+    height: 100%;
+    text-align: center;
+}
+
+.theRight{
+    width: 40%;
+    height: 100%;
+}
+
+
+.theMiddle{
+    width: 35%;
+    height: 100%;
+}
+
+.theLeft2{
+    width: 30%;
+    height: 100%;
+    text-align: center;
+}
+
+.theRight2{
+    width: 35%;
+    height: 100%;
+}
+
+
+.theMiddle2{
+    width: 35%;
+    height: 100%;
+    text-align: center;
+}
+
+.form-submit-button {
+    background: blue;
+}
+
+.right {
+    width: 45%;
+    height: 100%;
+}
+
+/* unvisited link */
+a:link {
+    color: blue;
+}
+
+/* visited link */
+a:visited {
+    color: blue;
+}
+
+/* mouse over link */
+button:hover {
+    background: coral;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: aquamarine;}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {display: inline-block;}

@@ -1,0 +1,109 @@
+<!--https://www.w3schools.com/tags/tryit.asp?filename=tryhtml5_canvas_drawimage
+https://atomicrobotdesign.com/blog/javascript/draw-a-rectangle-using-the-mouse-on-the-canvas-in-less-than-40-lines-of-javascript/
+https://jsfiddle.net/richardcwc/ukqhf54k/-->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Label Regions</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+    </head>
+    <header>
+        <a href="{{ url_for('stepTwo') }}"><button id="headerButton">Home</button></a>
+        <br>
+    </header>
+    <body>
+
+    <main role="main">
+        <h1>New Symbol</h1>
+        <div class="row">
+            <div class="column left">
+                <font color="red">1. Draw regions around symbols on the image&#8595;&#8595;&#8595;</font>
+                <br>
+                <img src="static/action.jpg" id="theImagetoLabel" alt="Image to Be Labeled">
+                <canvas id="canvas" width="400" height="400"></canvas>
+            </div>
+            <div class="column right" id="rightDiv">
+                <font color="red">2. Fill out form below. All fields required.</font><br>
+                <div id="">
+                    <form id="symbolInfo" action="" method="POST">
+                        <label for="symbolTemplateName">Template Name:</label>
+                        <input type="text" id="symbolTemplateName" name="symbolTemplateName" readonly> <br>
+                        <b><label>What is the text translation of this symbol?</label></b><br>
+                        <label for="theSymbolName">Name: </label>
+                        <input type="text" id="theSymbolName" name="theSymbolName" required> <br>
+                        <label for="symbolCoors">Coordinates:</label>
+                        <input type="text" id="symbolCoors" name="symbolCoors" readonly>
+                        <input type="submit" name="save" value="Save Symbol" class="submitButton">
+                    </form>
+                </div>
+                <br>
+                <a href="{{ url_for('scanCards') }}"><button id="finishedButton">Done</button></a>
+            </div>
+        </div>
+        </main>
+        <script>
+
+            //Canvas
+            var canvas = document.getElementById('canvas');
+            var ctx = canvas.getContext('2d');
+            var img = document.getElementById('theImagetoLabel');
+
+            //Variables
+            var canvasx = $(canvas).offset().left;
+            var canvasy = $(canvas).offset().top;
+            var last_mousex = last_mousey = 0;
+            var mousex = mousey = 0;
+            var mousedown = false;
+
+            img.onload = function(){
+              ctx.drawImage(img,0,0);
+            };
+
+            //Mousedown
+            $(canvas).on('mousedown', function(e) {
+                last_mousex = parseInt(e.clientX-canvasx);
+                last_mousey = parseInt(e.clientY-canvasy);
+                mousedown = true;
+            });
+
+            //Mouseup
+            $(canvas).on('mouseup', function(e) {
+                mousedown = false;
+                // figure out a way to get this value
+                document.getElementById('symbolTemplateName').value = 'action.jpg';
+                document.getElementById('symbolCoors').value = '(' + last_mousex + ',' + last_mousey + ',' + mousex + ',' + mousey + ')';
+            });
+
+            //Mousemove
+            $(canvas).on('mousemove', function(e) {
+                mousex = parseInt(e.clientX-canvasx);
+                mousey = parseInt(e.clientY-canvasy);
+                if(mousedown) {
+                    ctx.clearRect(0,0,canvas.width,canvas.height); //clear canvas
+                    ctx.drawImage(img, 0, 0);
+                    ctx.beginPath();
+                    var width = mousex-last_mousex;
+                    var height = mousey-last_mousey;
+                    ctx.rect(last_mousex,last_mousey,width,height);
+                    ctx.strokeStyle = 'red';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+            });
+
+            $('#finishedButton').click(function(){
+                var isDone = confirm("Are you finished adding symbols?\nSelect OK to continue or Cancel to add more.");
+                if(isDone){
+                    return true;
+                }else {
+                    return false;
+                }
+            });
+
+        </script>
+    </body>
+</html>

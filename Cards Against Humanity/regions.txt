@@ -1,0 +1,9 @@
+Black.jpg First LineText:(30,148,370,186) Second Line with blankspaceText:(84,194,310,226) Third LineText:(93,226,306,259) 
+Black1.jpg 
+Black3.jpg 
+White.jpg First Answer:(76,140,329,181) Second AnswerText:(16,180,381,220) Third AnswerText:(120,221,275,251) 
+
+
+
+
+Black.jpg 

@@ -1,0 +1,45 @@
+creature.jpg  typeText:(25,229,252,249) cardColorColor:(376,250,388,351) cardInfoTextSymbols:(28,255,373,358) importantSymbolsSymbols:(259,7,396,40)
+action1.jpg cardInfoText:(10,243,395,395) cardTypeText:(8,212,334,253) cardTitleText:(11,8,320,46)
+land.jpg cardTitleText:(8,9,229,40) cardInfoTextSymbols:(5,249,394,378) cardTypeText:(11,221,222,247) importantSymbolsSymbols:(259,7,396,40) typeSymbolSymbols:(299,225,384,249)orig.jpg action1.jpg 
+creature.jpg 
+land.jpg 
+
+
+
+action1.jpg 
+creature.jpg 
+land.jpg 
+
+
+
+action1.jpg 
+creature.jpg 
+land.jpg 
+s.jpg 
+
+
+
+action1.jpg 
+creature.jpg 
+enchantment.jpg descriptionHereTextSymbols:(22,252,382,378) 
+land.jpg 
+s.jpg 
+
+
+
+
+
+action1.jpg 
+creature.jpg 
+enchantment.jpg 
+action1.jpg 
+creature.jpg 
+enchantment.jpg heerTextSymbols:(21,252,376,376) 
+action1.jpg 
+creature.jpg 
+enchantment.jpg hereTextSymbols:(19,252,380,377) 
+land.jpg s.jpg 
+
+
+
+

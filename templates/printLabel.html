@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Print Label</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+    </head>
+    <header>
+        <a href="{{ url_for('stepTwo') }}"><button id="headerButton">Home</button></a>
+        <br>
+    </header>
+    <body>
+    <main role="main">
+        <h1>Printing Labels</h1>
+        <div class="row">
+            <div class="column theLeft2">
+                <font color="red">1. Select card to print label for</font>
+                <form id="printInfo" action="" method="POST">
+                    <select id="templateNames" name="templateNames" size="{{templateLen}}" onChange="showImage()">
+                        {%for i in range(0, templateLen)%}
+                            <option value="{{templateNames[i]}}">{{templateNames[i]}}</option>
+                        {%endfor%}
+                    </select>
+                </form>
+            </div>
+            <div class="column theMiddle2">
+                <img src="{{img}}" id="theImagetoBePrinted" alt="Image to Be Printed">
+            </div>
+            <div class="column theRight2">
+                <font color="red">2. Verify text matches card text, if not edit it&#8595;</font>
+                <textarea id="textFromCard" name="textFromCard" rows="10" cols="35">{{text}}
+                </textarea>
+                <div class="buttonGroup">
+                    <button>Get Text Verified (MT)</button>
+                    <button id="printLabel">Print Label</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        $('#printLabel').click(function(){
+            var theText = document.getElementById("textFromCard").value;
+            $.ajax({
+                type: "POST",
+                url: "{{ url_for("saveLabel") }}",
+                contentType: "application/json",
+                data: JSON.stringify(theText),
+                dataType: "json",
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
+        });
+        function showImage(){
+            var image = document.getElementById("theImagetoBePrinted");
+            var dropdown = document.getElementById("templateNames");
+            image.src = 'static/newCards/' + dropdown.value;
+            document.getElementById("printInfo").submit();
+        };
+    </script>
+    </body>
+</html>

@@ -1,0 +1,49 @@
+<!--https://stackoverflow.com/questions/49119488/how-to-import-values-from-a-text-file-to-javascript-and-then-populate-html-dropd/49120024
+https://stackoverflow.com/questions/16585041/html-how-can-i-display-images-when-option-from-drop-down-menu-is-selected-->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Edit Templates</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+    </head>
+    <body>
+    <header>
+        <a href="{{ url_for('stepTwo') }}"><button id="headerButton">Home</button></a>
+    </header>
+    <main role="main">
+        <h1>Editing Templates</h1>
+        <div id="theTemplates" class="column left">
+            <select id="templateNames" name="templateNames" onChange="showImage()">
+                {%for i in range(0, len)%}
+                    <option value="{{templateNames[i]}}">{{templateNames[i]}}</option>
+                {%endfor%}
+            </select>
+            <br>
+            <img src="" id="theCardTemplate" alt="The Card Template">
+        </div>
+        <br>
+        <div class="column right">
+            <form id="regionInfo" action="" method="POST">
+                <label for="templateName">Template Name:</label>
+                <input type="text" id="templateName" name="templateName"><br>
+                <b><label>Do you want to delete or edit this template?</label></b><br>
+                <input type="radio" id="delete" name="deleteEdit" value="delete" required> Delete Template
+                <input type="radio" id="edit" name="deleteEdit" value="edit"> Edit Template<br><br>
+                <input type="submit" value="Continue" class="submitButton">
+            </form>
+        </div>
+    </main>
+    <script>
+        function showImage(){
+            document.getElementById('templateName').value = document.getElementById("templateNames").value;
+            var image = document.getElementById("theCardTemplate");
+            var dropdown = document.getElementById("templateNames");
+            image.src = 'static/cardTemplates/' + dropdown.value;
+        };
+    </script>
+    </body>
+</html>

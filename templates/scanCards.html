@@ -1,0 +1,79 @@
+<!--https://stackoverflow.com/questions/58924015/how-to-display-image-in-flask-after-a-button-is-pressed
+https://stackoverflow.com/questions/59370905/flask-calling-python-function-that-return-image-on-button-onclick-->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Scan Cards</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+    </head>
+    <header>
+        <a href="{{ url_for('stepTwo') }}"><button id="headerButton">Home</button></a>
+        <br>
+    </header>
+    <body>
+        <audio id="myAudio">
+          <source src="cameraClick.mp3" type="audio/mpeg">
+        </audio>
+        <h1>Scanning Cards</h1>
+        <div>
+            <font color="red"><h2>Take picture when system says good</h2></font>
+        </div>
+        <img class="soloImage" width="60%" src="{{ url_for('videoFeed') }}" alt="Camera Feed">
+        <br>
+        <div class="buttonGroup">
+            <button type="button" id ="thePic">Take Picture</button>
+            <select id="cardInfo" name="cardInfo" onChange="findInfo()">
+                <option value="info">Select Card Information</option>
+                <option value="color">Get Card Color</option>
+                <option value="category">Get Card Category</option>
+                <option value="text">Get Card Text</option>
+            </select>
+            <a id="isDone" href="{{ url_for('printLabel') }}"><button>Done</button></a>
+        </div>
+        <script>
+        $(document).ready(function() {
+            $('#thePic').click(function(){
+                $.ajax({
+                   url: "{{ url_for ('saveImage') }}",
+                  error: function(xhr) {
+                    //Do Something to handle error
+                  }
+                });
+            });
+            $('#isDone').click(function(){
+                var isDone = confirm("Are you finished taking pictures of cards?\nSelect OK to continue or Cancel to keep taking pictures.");
+                if(isDone){
+                    return true;
+                }else {
+                    return false;
+                }
+            });
+        });
+        function findInfo(){
+            var info = document.getElementById("cardInfo").value;
+            if (info == 'color') {
+                $.getJSON('/getColor', function(data) {
+                  //do nothing
+                });
+                return false;
+            }
+            if (info == 'category') {
+                $.getJSON('/getType', function(data) {
+                  //do nothing
+                });
+                return false;
+            }
+            if (info == 'text') {
+                $.getJSON('/getText', function(data) {
+                  //do nothing
+                });
+                return false;
+            }
+        };
+        </script>
+    </body>
+</html>
