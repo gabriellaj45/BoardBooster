@@ -1,0 +1,99 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/braille-small-3d.css') }}">
+<script src="{{url_for('static', filename='js/braille-tools.js')}}"></script>
+<script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+<script src="{{url_for('static', filename='js/dragAndDrop.js')}}"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+
+<style>
+    #container{
+    width:400px;
+    height:200px;
+}
+#rightcontainer{
+    width:300px;
+    height:200px;
+    background:gray;
+    color:#fff;
+    margin-left:110px;
+    padding:10px;
+}
+#leftmenu{
+    color:#fff;
+    background-color:green;
+    width:100px;
+    height:200px;
+    position:fixed;
+    left:0;
+    padding:10px;
+}
+
+button{
+    display:block;
+    height:20px;
+    margin-top:10px;
+    margin-bottom:10px;
+}
+.drag{
+  width:40px;
+  height:20px;
+  background-color:blue;
+  z-index:100000;
+  margin-top:10px;
+}
+</style>
+
+<button onclick="takeScreenShot()">Snapshot</button>
+<input id="txtBraille" type="text">
+        <button id="btnBraille" onclick="showBraille()">Show Braille</button>
+        <br><br>
+        <div id="newNodes">
+        <p id="myBraille">
+        </p>
+        </div>
+<div id="container">
+    <div id="leftmenu">
+      Left Side
+
+    </div>
+    <div id="rightcontainer">
+    Right Side
+    </div>
+</div>
+
+<script>
+var idNum = 0;
+
+var takeScreenShot = function() {
+    html2canvas(document.getElementById("container"), {
+        allowTaint: true,
+        onrendered: function (canvas) {
+            var tempcanvas=document.createElement('canvas');
+            tempcanvas.width=350;
+            tempcanvas.height=350;
+            var context=tempcanvas.getContext('2d');
+            context.drawImage(canvas,0, 0, 350,350);
+            var link=document.createElement("a");
+            link.href=tempcanvas.toDataURL('image/jpg');   //function blocks CORS
+            link.download = 'screenshot.jpg';
+            link.click();
+        }
+    });
+}
+
+function showBraille() {
+	var message = document.getElementById("txtBraille").value;
+    var tag = document.createElement("p");
+    document.getElementsByTagName("p")[idNum].setAttribute("class", "braille drag-drop");
+    document.getElementsByTagName("p")[idNum].setAttribute("id", idNum);
+    document.getElementsByTagName("p")[idNum].setAttribute("style", "background-color: transparent");
+    document.getElementById(idNum).innerHTML = br.braille(message);
+    var element = document.getElementById("newNodes");
+    element.appendChild(tag);
+    idNum = idNum + 1;
+}
+</script>

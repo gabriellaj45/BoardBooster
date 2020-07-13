@@ -1,0 +1,252 @@
+<!--https://www.w3schools.com/tags/tryit.asp?filename=tryhtml5_canvas_drawimage
+https://atomicrobotdesign.com/blog/javascript/draw-a-rectangle-using-the-mouse-on-the-canvas-in-less-than-40-lines-of-javascript/
+https://jsfiddle.net/richardcwc/ukqhf54k/-->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Label Regions</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+    </head>
+    <header>
+        <!--<span class="imageHelp">
+            <font color="red">Need Help?</font>
+            <div class="imageHelpText">Follow the Steps. Label Important Regions on Card<img src="static/labeledRegions.jpg"></div>
+        </span>-->
+        <div class="theLeftHeader">
+            <button id="toQuit" class="quitButton">QUIT</button>
+        </div>
+        <div class="theMiddleHeader">
+            <b><u>Game:</u></b> {{cardGame}}
+        </div>
+        <div class="theRightHeader">
+            <button id="toRetake" class="otherButton">RETAKE PICTURE</button>
+        </div>
+    </header>
+    <body>
+    <main role="main">
+        <h1>ADDING NEW TEMPLATE</h1>
+        <br>
+        <div class="row">
+            <div class="column left">
+                <form id="cardInfo" action="" method="POST">
+                    <select id="templateNames" name="templateNames" onChange="showImage()">
+                        <option value="Select a card to label">Select a card to label</option>
+                        {%for i in range(0, templateLen)%}
+                            <option value="{{templateNames[i]}}">{{templateNames[i]}}</option>
+                        {%endfor%}
+                    </select>
+                </form>
+                <font color="red">1. Draw regions on the image with cursor&#8595;&#8595;&#8595;</font>
+                <br>
+                <!--
+                <div class="dialogBox" id="finish">
+                    <div class="message">Are you finished labeling all parts of this card?</div>
+                    <br>
+                    <a href="{{ url_for('scanCards') }}"><button class="yes">Yes</button></a>
+                    <button class="no">No</button>
+                </div>
+                <div class="dialogBox" id="quit">
+                    <div class="message">Are you sure you want to quit labeling this card?</div>
+                    <br>
+                    <a href="{{ url_for('scanCards') }}"><button class="quit">Quit</button></a>
+                    <button class="cancel">Cancel</button>
+                </div>
+                <div class="dialogBox" id="retake">
+                    <div class="message">Are you sure you want to retake the picture of this card?</div>
+                    <br>
+                    <a href="{{ url_for('scanCards') }}"><button class="quit">Retake</button></a>
+                    <button class="cancel">Cancel</button>
+                </div>-->
+                <img src="" id="theImagetoLabel" alt="Image to Be Labeled">
+                <canvas id="canvas" width="400" height="400"></canvas>
+                <div class="buttonGroup">
+                    <button id="undoRegions">Undo Last Saved Region</button>
+                    <button id="showRegions">Show Regions Created</button>
+                    <form id="regionRefresh">
+
+                    </form>
+                </div>
+            </div>
+            <div class="column right" id="rightDiv">
+                <br>
+                <font color="red">2. Fill out form below. All fields required.</font><br>
+                <div id="">
+                    <form id="regionInfo" action="" method="POST">
+                        <label style="display:none;">Card Name:</label>
+                        <input style="display:none;" type="text" id="cardName" name="cardName" value="" required>
+
+                        <label>Type of Card:</label>
+                        <input type="text" id="templateName" name="templateName" value="{{templateName}}" required> <br><br>
+
+                        <b><label>Will there be text in this region?</label></b><br>
+                        <input type="radio" id="yesText" name="lookingForText"  value="yesText" required> Yes
+                        <input type="radio" id="noText" name="lookingForText" value="noText"> No<br><br>
+
+                        <b><label>Will there be symbols in this region?</label></b><br>
+                        <input type="radio" id="yesSymbols" name="lookingForSymbols" value="yesSymbols" required> Yes
+                        <input type="radio" id="noSymbols" name="lookingForSymbols" value="noSymbols"> No<br><br>
+
+                        <b><label>Is color of the card important to know?</label></b><br>
+                        <input type="radio" id="yesColor" name="lookingForColor" onclick="tipPrompt();" value="yesColor" required> Yes
+                        <input type="radio" id="noColor" name="lookingForColor" value="noColor"> No<br><br>
+
+                        <label>What is this region called?</label>
+                        <input type="text" id="theName" name="theName" required> <br><br>
+                        <label for="regionCoors">Coordinates:</label>
+                        <input type="text" id="regionCoors" name="regionCoors" readonly>
+                        <input type="submit" name="save" value="Save Region" class="submitButton">
+                    </form>
+                    <br>
+                    <div class="buttonGroup">
+                        <a id="isDone" href="{{ url_for('symbolDirections') }}"><button id="finishLabeling">Finished</button></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <object width="800" height="800" type="text/plain" data="static/regions.txt" border="0" id="currRegionInfo">
+        </object>
+        </main>
+        <script>
+            //Canvas
+            var canvas = document.getElementById('canvas');
+            var ctx = canvas.getContext('2d');
+            var img = document.getElementById('theImagetoLabel');
+
+            //Variables
+            var canvasx = $(canvas).offset().left;
+            var canvasy = $(canvas).offset().top;
+            var last_mousex = last_mousey = 0;
+            var mousex = mousey = 0;
+            var mousedown = false;
+
+            img.onload = function(){
+              ctx.drawImage(img,0,0);
+            };
+
+            //Mousedown
+            $(canvas).on('mousedown', function(e) {
+                last_mousex = parseInt(e.clientX-canvasx);
+                last_mousey = parseInt(e.clientY-canvasy);
+                mousedown = true;
+            });
+
+            //Mouseup
+            $(canvas).on('mouseup', function(e) {
+                mousedown = false;
+                document.getElementById('regionCoors').value = '(' + last_mousex + ',' + last_mousey + ',' + mousex + ',' + mousey + ')';
+                document.getElementById('cardName').value = document.getElementById("templateNames").value;
+            });
+
+            //Mousemove
+            $(canvas).on('mousemove', function(e) {
+                mousex = parseInt(e.clientX-canvasx);
+                mousey = parseInt(e.clientY-canvasy);
+                if(mousedown) {
+                    ctx.clearRect(0,0,canvas.width,canvas.height); //clear canvas
+                    ctx.drawImage(img, 0, 0);
+                    ctx.beginPath();
+                    var width = mousex-last_mousex;
+                    var height = mousey-last_mousey;
+                    ctx.rect(last_mousex,last_mousey,width,height);
+                    ctx.strokeStyle = 'red';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+            });
+
+            function finishAlert(msg, myYes) {
+                var finishBox = $("#finish");
+                finishBox.find(".message").text(msg);
+                finishBox.find(".no").unbind().click(function() {
+                   finishBox.hide();
+                });
+                finishBox.find(".yes").click(myYes);
+                finishBox.show();
+            }
+
+            function quitAlert(msg, myYes) {
+                var quitBox = $("#quit");
+                quitBox.find(".message").text(msg);
+                quitBox.find(".cancel").unbind().click(function() {
+                    quitBox.hide();
+                });
+                quitBox.find(".save").click(myYes);
+                quitBox.show();
+            }
+
+            function retakeAlert(msg, myYes) {
+                var retakeBox = $("#retake");
+                retakeBox.find(".message").text(msg);
+                retakeBox.find(".cancel").unbind().click(function() {
+                    retakeBox.hide();
+                });
+                retakeBox.find(".save").click(myYes);
+                retakeBox.show();
+            }
+
+            $('#isDone').click(function(){
+                var isDone = confirm("Are you finished labeling all parts of all card templates?\nSelect OK to continue or Cancel to keep taking labeling.");
+                if(isDone){
+                    return true;
+                }else {
+                    return false;
+                }
+            });
+
+            $('#toRetake').click(function(){
+                var isDone = confirm("Are you sure you want to retake the picture of this card?\nSelect OK to continue or Cancel to keep taking labeling.");
+                if(isDone){
+                    return true;
+                }else {
+                    return false;
+                }
+            });
+
+            $('#toQuit').click(function(){
+                var isDone = confirm("Are you sure you want to quit?\nSelect OK to continue or Cancel to keep taking labeling.");
+                if(isDone){
+                    return true;
+                }else {
+                    return false;
+                }
+            });
+
+            function showImage(){
+                var image = document.getElementById("theImagetoLabel");
+                var dropdown = document.getElementById("templateNames");
+                image.src = 'static/newCards/' + dropdown.value;
+            };
+
+            $('#showRegions').click(function(){
+                var x = document.getElementById("currRegionInfo");
+                if (x.style.display === "block") {
+                    x.style.display = "none";
+                } else {
+                    x.style.display = "block";
+                }
+            });
+
+            function tipPrompt() {
+                alert("Make a separate region for the color of the card, only the color of the card no text or symbols.");
+            }
+
+            $('#undoRegions').click(function(){
+                $.ajax({
+                   url: "{{ url_for ('removeLastRegion') }}",
+                   type: "POST",
+                   success: function(response) {
+                      document.getElementById("regionRefresh").submit();
+                   },
+                  error: function(xhr) {
+                    //Do Something to handle error
+                  }
+                });
+            });
+
+        </script>
+    </body>
+</html>

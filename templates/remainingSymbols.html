@@ -1,0 +1,53 @@
+<html lang="en">
+    <head>
+        <title>LabelGen</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+    </head>
+    <header>
+        <br>
+        <div class="theLeftHeader">
+            <a href="{{ url_for('index') }}"><button class="quitButton">QUIT</button></a>
+        </div>
+        <div class="theMiddleHeader">
+            <b><u>Game:</u></b> {{cardGame}}
+        </div>
+        <div class="theRightHeader">
+            <a href="{{ url_for('newSymbol') }}"><button class="otherButton">GO BACK</button></a>
+        </div>
+    </header>
+    <body>
+    <h1>Are there symbols you weren't able to label on the card templates?</h1>
+    <br>
+    <div class="buttonGroup">
+        <button type="button" id ="boardYes" onclick="showStep()">Yes</button>
+        <a href="{{ url_for('printLabel') }}"><button type="button" id ="boardNo">No</button></a>
+    </div>
+    <br><br>
+    <div id="secondStep">
+        <h1>Do you have a digital file of the symbols?</h1>
+        <br>
+        <div class="buttonGroup">
+            <a href="{{ url_for('symbolUpload') }}"><button type="button" id ="digitalYes">Yes</button></a>
+            <a href="{{ url_for('scanSymbols') }}"><button type="button" id ="digitalNo">No</button></a>
+        </div>
+    </div>
+    <br><br>
+    <script>
+    function showStep() {
+        document.getElementById("secondStep").style.display = "block";
+    }
+    function showNextStepYes() {
+        document.getElementById("thirdYesStep").style.display = "block";
+        document.getElementById("thirdNoStep").style.display = "none";
+    }
+    function showNextStepNo() {
+        document.getElementById("thirdYesStep").style.display = "none";
+        document.getElementById("thirdNoStep").style.display = "block";
+    }
+    </script>
+    </body>
+</html>

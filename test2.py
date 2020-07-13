@@ -1,47 +1,52 @@
-from addNewRegion import *
-from textDetection import findText
+from cv2 import aruco
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+from matplotlib.backends.backend_pdf import PdfPages
 
+cardGame = 'Dominion'
+playerPieces = 4
+maxPieces = 4
+extraPieces = 25
+outputPDF = PdfPages('static/gamePieceMarkers.pdf')
+aruco_dict = aruco.Dictionary_get(aruco.DICT_4X4_250)
+fileTitle = cardGame + ' Game Piece Markers'
 
-def insideRect(x1, y1, x2, y2, x, y):
-    if x > x1 and x < x2 and y > y1 and y < y2:
-        return True
+fig = plt.figure()
+plt.suptitle(fileTitle, fontsize=16, fontweight='bold')
+
+nx = int(playerPieces)
+ny = int(maxPieces)
+k = 1
+for i in range(1, int(maxPieces) + 1):
+    for j in range(1, int(playerPieces) + 1):
+        ax = fig.add_subplot(10, 10, k)
+        img = aruco.drawMarker(aruco_dict, i, 700)
+        plt.title(i, size=5, pad=5)
+        plt.imshow(img, cmap=mpl.cm.gray, interpolation="nearest")
+        ax.axis("off")
+        k = k + 1
+plt.subplots_adjust(hspace=1.5, wspace=0.4)
+outputPDF.savefig()
+if int(extraPieces) > 0:
+    fileTitle = cardGame + ' Additional Piece Markers'
+
+    fig = plt.figure()
+    plt.suptitle(fileTitle, fontsize=16, fontweight='bold')
+
+    if int(extraPieces) % 2 == 0:
+        nx = int(int(extraPieces) / 2)
+        ny = int(int(extraPieces) / 2)
     else:
-        return False
-
-
-def checkNewText(fileName, game, template):
-    regionName = 'Text'
-    textBoxes = findText(fileName)
-    for box in textBoxes:
-        x1 = int(box[0][0])
-        y1 = int(box[0][1])
-        x2 = int(box[1][0])
-        y2 = int(box[1][1])
-        f = open(game + "/regions.txt", "r")
-        f1 = f.readlines()
-        for x in f1:
-            line = re.split('\s', x)
-            for name in line[1:]:
-                name = re.sub(':', ' ', name)
-                labelName = re.split('\s', name)
-                if regionName in labelName[0] and line[0] == template:
-                    labelName[1] = re.sub('\(', '', labelName[1])
-                    labelName[1] = re.sub('\)', '', labelName[1])
-                    labelName[1] = re.sub(',', ' ', labelName[1])
-                    region = str(labelName[1])
-                    region = re.split('\s', region)
-                    region = list(filter(lambda a: a != '', region))
-        regionX1 = int(region[0])
-        regionY1 = int(region[1])
-        regionX2 = int(region[2])
-        regionY2 = int(region[3])
-
-        if x1 >= regionX1 and y1 >= regionY1:
-            if x2 <= regionX2 and y2 <= regionY2:
-                continue
-            else:
-                addNewRegion(game, template, fileName, textBoxes)
-                break
-        else:
-            addNewRegion(game, template, fileName, textBoxes)
-            break
+        nx = int(int(extraPieces) / 2) + 1
+        ny = int(int(extraPieces) / 2) + 1
+    newID = int(maxPieces) + 1
+    for i in range(1, int(extraPieces) + 1):
+        ax = fig.add_subplot(10, 10, i)
+        img = aruco.drawMarker(aruco_dict, newID, 700)
+        plt.title(newID, size=5, pad=5)
+        plt.imshow(img, cmap=mpl.cm.gray, interpolation="nearest")
+        ax.axis("off")
+        newID = newID + 1
+    plt.subplots_adjust(hspace=1.5, wspace=0.4)
+    outputPDF.savefig()
+outputPDF.close()

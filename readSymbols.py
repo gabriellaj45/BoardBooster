@@ -11,13 +11,13 @@ def checkPoint(x1, y1, x2, y2, x, y):
         return False
 
 
-def getSymbolName(game, cardFile, coors):
+def getSymbolName(cardFile, coors):
     symbolsFound = []
     cardSearching = cv2.imread(cardFile)
     cardSearchingGray = cv2.cvtColor(cardSearching, cv2.COLOR_BGR2GRAY)
 
-    for filename in os.listdir(game + '/cardSymbols/'):
-        path = game + "/cardSymbols/"
+    for filename in os.listdir('static/cardSymbols/'):
+        path = "static/cardSymbols/"
         cardFile = path + filename
         symbolLookingFor = cv2.imread(cardFile, 0)
         w, h = symbolLookingFor.shape[::-1]
@@ -43,14 +43,15 @@ def getSymbolName(game, cardFile, coors):
     return symbolsFound
 
 
-def detectSymbols(file, game):
+def detectSymbols(file):
     symbolsFound = []
     cardSearching = cv2.imread(file)
     cardSearchingGray = cv2.cvtColor(cardSearching, cv2.COLOR_BGR2GRAY)
 
-    for filename in os.listdir(game + '/cardSymbols/'):
-        path = game + "/cardSymbols/"
+    for filename in os.listdir('static/cardSymbols/'):
+        path = "static/cardSymbols/"
         cardFile = path + filename
+
         symbolLookingFor = cv2.imread(cardFile, 0)
         w, h = symbolLookingFor.shape[::-1]
 
@@ -60,5 +61,7 @@ def detectSymbols(file, game):
         loc = np.where(res >= threshold)
         for pt in zip(*loc[::-1]):
             symbolsFound.append((pt, (pt[0] + w, pt[1] + h)))
-    symbolsFound = set(symbolsFound)
+            cv2.rectangle(cardSearchingGray, pt, (pt[0] + w, pt[1] + h), (0, 0, 255), 2)
+    cv2.imwrite('symbolsTest.png', cardSearchingGray)
+
     return symbolsFound

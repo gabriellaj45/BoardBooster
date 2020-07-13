@@ -1,0 +1,52 @@
+<!--https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_filter_list-->
+<html lang="en">
+    <head>
+        <title>BoardBooster</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+    </head>
+    <header>
+        <br>
+        <a href="{{ url_for('index') }}"><button id="headerButton">QUIT</button></a>
+        <br>
+    </header>
+    <body>
+
+    <h1>Does {{cardGame}} have any cards?</h1>
+    <br>
+    <div class="buttonGroup">
+        <button type="button" id ="boardYes" onclick="showStep()">Yes</button>
+        <a href="{{ url_for('accessKit') }}"><button type="button" id ="cardNo">No</button></a>
+    </div>
+    <br><br>
+    <div id="secondStep">
+        <h1>Do you have a digital file of the cards?</h1>
+        <br>
+        <div class="buttonGroup">
+            <a href="{{ url_for('cardUpload') }}"><button type="button" id ="digitalYes">Yes</button></a>
+            <a href="{{ url_for('differentTemplates') }}"><button type="button" id ="digitalNo">No</button></a>
+        </div>
+    </div>
+    <script>
+    function showStep() {
+        document.getElementById("secondStep").style.display = "block";
+    }
+
+    $('#cardNo').click(function(){
+        $.ajax({
+           url: "{{ url_for ('generateAccessKitPDF') }}",
+           type: "GET",
+           success: function(response) {
+              console.log(response);
+           },
+          error: function(xhr) {
+            //Do Something to handle error
+          }
+        });
+    });
+    </script>
+    </body>
+</html>

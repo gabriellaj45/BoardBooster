@@ -1,0 +1,24 @@
+<!--https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_filter_list-->
+<html lang="en">
+    <head>
+        <title>BoardBooster</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+    </head>
+    <header>
+        <br>
+        <a href="{{ url_for('index') }}"><button id="headerButton">QUIT</button></a>
+        <br>
+    </header>
+    <body>
+
+    <h1>Preview Labels for Cards</h1>
+    <iframe src="{{url_for('static', filename ='theCards.pdf')}}">
+    </iframe>
+    <a href="{{ url_for('printLabel') }}"><button type="button" id ="goBack">GO BACK</button></a>
+    <a href="{{ url_for('accessKit') }}"><button type="button" id ="buttonDone">CONTINUE</button></a>
+    </body>
+</html>

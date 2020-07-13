@@ -5,12 +5,12 @@ from collections import OrderedDict
 from getText import *
 
 
-def textAndSymbols(game, file):
+def textAndSymbols(file):
     textSymbolsDict = {}
     textSymbolsOGCoors = {}
 
     textFound = findText(file)
-    symbolsFound = detectSymbols(file, game)
+    symbolsFound = detectSymbols(file)
     index = 0
 
     for i in textFound:
@@ -45,12 +45,12 @@ def textAndSymbols(game, file):
         print('no symbols found')
         finalString = pytesseract.image_to_string(Image.open(file))
     elif len(textFound) == 0:
-        finalString = getSymbolName(game, file)
+        finalString = getSymbolName(file)
         print('no text found')
     else:
         print('both found')
         for x, y in textSymbolsDict.items():
-            '''
+            print(x, y)
             if 't' in x:
                 textCoors = textSymbolsOGCoors[x]
                 textX1 = int(textCoors[0][0])
@@ -64,9 +64,9 @@ def textAndSymbols(game, file):
                 text = readText('textCropped.jpg')
                 finalString = finalString + ' ' + text
                 continue
-        '''
+
             if 's' in x:
-                '''
+
                 symbolCoors = textSymbolsOGCoors[x]
                 symbolX1 = int(symbolCoors[0][0])
                 symbolY1 = int(symbolCoors[0][1])
@@ -75,9 +75,10 @@ def textAndSymbols(game, file):
 
                 # cropImage = img[symbolY1:symbolY2, symbolX1:symbolX2]
                 cv2.imwrite('symbolCropped.jpg', img)
-                '''
-                symbolsFound = getSymbolName(game, 'symbolCropped.jpg', y)
+
+                symbolsFound = getSymbolName('symbolCropped.jpg', y)
                 symbolsFound = set(symbolsFound)
+                print(symbolsFound)
                 for word in symbolsFound:
                     textSymbolsDict[x] = word
                     finalString = finalString + ' ' + word

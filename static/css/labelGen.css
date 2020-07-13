@@ -8,6 +8,12 @@
     text-align: center;
 }
 
+.buttonBottom {
+    width: 500px;
+    position: absolute;
+    bottom: 0;
+}
+
 #homePage {
     vertical-align: middle;
     text-align: center;
@@ -21,6 +27,11 @@
 
 ::placeholder {
   color: red;
+  // background-color: white;
+}
+
+header {
+    margin-top: -5px;
 }
 
 
@@ -31,7 +42,9 @@
 
 .imageHelp{
     width: 20%;
-    outline: 5px dotted green;
+    position: relative;
+    //display: inline-block;
+    //outline: 5px dotted green;
 }
 
 
@@ -53,8 +66,9 @@
   /* Position the tooltip text - see examples below! */
   position: absolute;
   z-index: 1;
+  top: -5px;
+  left: 105%;
 }
-
 
 /* Show the tooltip text when you mouse over the tooltip container */
 .imageHelp:hover .imageHelpText {
@@ -66,7 +80,13 @@ canvas {
     border: 1px solid #000000;
 }
 
-#theImagetoLabel, #secondStep{
+iframe {
+    width: 100%;
+    height: 100%;
+}
+
+
+#theImagetoLabel, #secondStep, #thirdStep, #thirdYesStep, #thirdNoStep, #boardForm, #currRegionInfo, #currGameSpaceInfo{
     display: none;
 }
 
@@ -80,7 +100,7 @@ button {
 
 * {
     font-size: 20px;
-    font-family: "Lucida Console", Monaco, monospace;
+    font-family: "Times New Roman", Times, serif;
     background-color: lightgrey;
 }
 
@@ -89,11 +109,22 @@ h2, h3{
     text-align: center;
 }
 
+#myBraille {
+    height: 50px;
+    width: 500px;
+}
+
+.drag-drop {
+    z-index: 100000;
+    margin-top: 10px;
+}
+
 
 h1 {
     text-align: center;
     color: blue;
-    font-size: 40px;
+    font-size: 32px;
+    margin-bottom: -6px;
 }
 
 .soloImage {
@@ -106,8 +137,62 @@ h1 {
     float: left;
 }
 
-#headerButton {
-   float: right;
+#printLabel {
+    float: left;
+    width: 35%
+
+}
+.directionsText {
+    color: blue;
+    font-size: 40px;
+    text-align: center;
+    height: 90%;
+    padding: 150px 0;
+}
+
+.directionButton{
+    float: right;
+}
+
+.leftButton {
+    float: left;
+}
+
+#theTitle {
+    color: black;
+}
+
+.bottomInfo {
+  position: fixed;
+  width: 99%;
+  bottom: 1px;
+  height: 30%;
+
+}
+
+.frontPageIcons {
+    background-color: blue;
+}
+
+.bottomInfo, .bottomText {
+    background-color: blue;
+    color: white;
+    text-align: center;
+}
+
+#buttonDone, #finishedPrinting, #finishLabeling {
+    float: right;
+    width: 25%;
+}
+
+.quitButton {
+   float: left;
+   width: 50%;
+}
+
+.otherButton {
+    float: right;
+    width: 50%;
 }
 
 font {
@@ -126,6 +211,18 @@ font {
     width: 55%;
     height: 100%;
     text-align: center;
+}
+
+.left1{
+    width: 70%;
+    height: 100%;
+    text-align: center;
+}
+
+.right1{
+    width: 30%;
+    height: 100%;
+    text-align: left;
 }
 
 .theLeft{
@@ -162,6 +259,96 @@ font {
     height: 100%;
     text-align: center;
 }
+.theLeft4{
+    width: 225px;
+    //height: 100%;
+    text-align: center;
+}
+
+.theMiddle4{
+    width: 780px;
+    //height: 100%;
+    text-align: center;
+}
+
+.theRight4{
+    width: 225px;
+    //height: 100%;
+    text-align: center;
+}
+
+
+.theLeftHeader{
+    width: 33%;
+    text-align: center;
+    float: left;
+}
+
+.theRightHeader{
+    width: 33%;
+    text-align: center;
+    float: left;
+}
+
+.theMiddleHeader{
+    width: 33%;
+    text-align: center;
+    float: left;
+}
+
+.theLeft3{
+    width: 25%;
+    height: 100%;
+    text-align: left;
+    float: left;
+}
+
+.theRight3{
+    width: 25%;
+    height: 100%;
+    text-align: left;
+    float: left;
+}
+
+.theMiddle3{
+    width: 50%;
+    height: 100%;
+    text-align: center;
+    float: left;
+}
+
+.message {
+    background-color: #FFFFFF;
+}
+
+.dialogBox, .promptBox {
+    display: none;
+    background-color: #FFFFFF;
+    border: 1px solid #aaa;
+    position: fixed;
+    width: 350px;
+    left: 50%;
+    margin-left: -100px;
+    padding: 6px 8px 8px;
+    box-sizing: border-box;
+    text-align: center;
+ }
+
+ .dialogBox button, .promptBox button {
+    background-color: #000000;
+    display: inline-block;
+    border-radius: 5px;
+    border: 1px solid #aaa;
+    padding: 5px;
+    text-align: center;
+    width: 100px;
+    cursor: pointer;
+    color: #FFFFFF;
+ }
+
+ #confirm .message {
+    text-align: center;
+ }
 
 .form-submit-button {
     background: blue;

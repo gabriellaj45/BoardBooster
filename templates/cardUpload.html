@@ -1,0 +1,59 @@
+<html lang="en">
+    <head>
+        <title>LabelGen</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+    </head>
+    <header>
+        <br>
+        <div class="theLeftHeader">
+            <a href="{{ url_for('index') }}"><button class="quitButton">QUIT</button></a>
+        </div>
+        <div class="theMiddleHeader">
+            <b><u>Game:</u></b> {{cardGame}}
+        </div>
+        <div class="theRightHeader">
+            <a href="{{ url_for('newSymbol') }}"><button class="otherButton">GO BACK</button></a>
+        </div>
+    </header>
+    <body>
+    <h1>Upload the cards one at a time. Only upload unique cards, no duplicates.</h1>
+    <br><br>
+    <div>
+        <form action="/cardUpload" method="POST" enctype="multipart/form-data">
+            <input type="file" id="myFile" name="cards">
+            <input type="submit" class="submitButton" value="Upload" onclick="return checkFile();">
+        </form>
+        <a href="{{ url_for('cardParts') }}"><button type="button" id ="done">DONE</button></a><br><br>
+        Cards Uploaded:
+    </div>
+    <object width="800" height="800" type="text/plain" data="static/cardUploads.txt" border="0" id="currCardInfo">
+    </object>
+    <script>
+    function showStep() {
+        document.getElementById("secondStep").style.display = "block";
+    }
+    function showNextStepYes() {
+        document.getElementById("thirdYesStep").style.display = "block";
+        document.getElementById("thirdNoStep").style.display = "none";
+    }
+    function showNextStepNo() {
+        document.getElementById("thirdYesStep").style.display = "none";
+        document.getElementById("thirdNoStep").style.display = "block";
+    }
+    function checkFile() {
+        var file = document.getElementById("myFile");
+
+        if(file.files.length == 0 ){
+            alert('No card file selected, please choose a card file');
+            return false;
+        } else {
+            document.getElementById("myForm").submit();
+        }
+    }
+    </script>
+    </body>
+</html>

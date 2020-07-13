@@ -1,7 +1,7 @@
 <!--https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_filter_list-->
 <html lang="en">
     <head>
-        <title>LabelGen</title>
+        <title>BoardBooster</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -9,41 +9,34 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
     </head>
     <body>
-        <center><img src="static/labelGenLogo.png" id="labelGenLogo" alt="The logo for LabelGen"></center>
-        <h1>Welcome to LabelGen</h1>
-        <!--
-        <div class="dropdown">
-            <button class="dropbtn">Select Card Game</button>
-            <div class="dropdown-content">
-                <a href="#">Cards Against Humanity</a>
-                <a href="#">Dominion</a>
-                <a href="#">Magic the Gathering</a>
-                <a href="#">Add New Game</a>
-            </div>
-        </div>
-        <form>
-
-        </form>
-        <div>
-            <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Enter card game">
-
-            <ul id="myUL">
-              <li><a href="#">Cards Against Humanity</a></li>
-              <li><a href="#">Dominion</a></li>
-
-              <li><a href="#">Magic the Gathering</a></li>
-              <li><a href="#">Standard Playing Cards</a></li>
-            </ul>
-
-            <a href="{{ url_for('editTemplate') }}"><button class="homeButton">Edit Templates</button></a><br>
-            <a href="{{ url_for('cardInfo') }}"><button class="homeButton">Get Card Information</button></a>
-        </div>
-        <br>-->
+        <center><img src="static/labelGenLogo.png" height="20%" id="labelGenLogo" alt="The logo for LabelGen"></center>
+        <h1 id="theTitle">Welcome to BoardBooster</h1>
+        <br>
+        <center><font color="blue">Enter the game you are trying to create a kit for!</font></center>
         <div id="homePage">
             <form action="" method="POST">
-                <input type="text" id="cardInput" name="cardInput" placeholder="Enter card game..." required>
+                <input type="text" id="cardInput" name="cardInput" placeholder="Enter name of the game..." required>
                 <input type="submit" id="cardGame" value="Submit" class="submitButton">
             </form>
+        </div>
+        <div class="bottomInfo">
+            BoardBooster gives users a platform to create an accessibility kit for any board game
+            <br>
+            <p class="theLeftHeader bottomText">
+                <img class="frontPageIcons" src="static/editIcon.png" id="editIcon" alt="The Edit Icon">
+                <br>
+                Annotate board, generate Braille labels
+            </p>
+            <p class="theMiddleHeader bottomText">
+                <img class="frontPageIcons" src="static/labelIcon.png" id="labelIcon" alt="The Label Icon">
+                <br>
+                Label important parts of the card
+            </p>
+            <p class="theRightHeader bottomText">
+                <img class="frontPageIcons" src="static/picIcon.png" id="picIcon" alt="The Picture Icon">
+                <br>
+                Take pictures of the board and cards
+            </p>
         </div>
 
     <script>

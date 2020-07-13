@@ -1,3 +1,4 @@
+<!--https://codepen.io/zabielski/pen/gPPywv-->
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -9,15 +10,23 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
     </head>
     <header>
-        <a href="{{ url_for('stepTwo') }}"><button id="headerButton">Home</button></a>
-        <br>
+        <div class="theLeftHeader">
+            <a href="{{ url_for('index') }}"><button class="quitButton" id="toQuit">QUIT</button></a>
+        </div>
+        <div class="theMiddleHeader">
+            <b><u>Card Game:</u></b> {{cardGame}}
+        </div>
+        <div class="theRightHeader">
+            <a href="{{ url_for('scanCards') }}"><button class="otherButton" id="toScan">SCAN CARDS</button></a>
+        </div>
     </header>
     <body>
     <main role="main">
-        <h1>Printing Labels</h1>
+        <h1>PRINT PREVIEW</h1>
+        <br>
         <div class="row">
             <div class="column theLeft2">
-                <font color="red">1. Select card to print label for</font>
+                <font color="orange">Print Queue</font>
                 <form id="printInfo" action="" method="POST">
                     <select id="templateNames" name="templateNames" size="{{templateLen}}" onChange="showImage()">
                         {%for i in range(0, templateLen)%}
@@ -27,42 +36,185 @@
                 </form>
             </div>
             <div class="column theMiddle2">
+                <!--
+                <div class="dialogBox" id="confirm">
+                    <div class="message">Do you want to save the print queue for later?</div>
+                    <br>
+                    <button class="save">Save</button>
+                    <a href="{{ url_for('index') }}"><button class="noSave">Don't Save</button></a>
+                    <button class="cancel">Cancel</button>
+                </div>
+                <div class="promptBox" id="session">
+                    <label class="message">Save Print Session As:</label>
+                    <input type="text" id="sessionName" class="message">
+                    <br>
+                    <a href="{{ url_for('index') }}"><button class="saveSession" onclick="saveSession();">Save</button></a>
+                    <button class="cancel" onclick="cancelSession();">Cancel</button>
+                </div>-->
+                <center><b>Labels Generated:</b> <span id="labelCounter"> 0 </span></center>
                 <img src="{{img}}" id="theImagetoBePrinted" alt="Image to Be Printed">
+                <br>
+                <a href="{{ url_for('scanCards') }}"><button id="toRetake">Retake Picture</button></a>
             </div>
             <div class="column theRight2">
-                <font color="red">2. Verify text matches card text, if not edit it&#8595;</font>
-                <textarea id="textFromCard" name="textFromCard" rows="10" cols="35">{{text}}
-                </textarea>
+                <br>
+                <br>
+                <br>
+                <center><font color="blue">Verify text matches card text, if not edit it. <br>
+                    Then press Generate Label when text is correct.&#8595;</font></center>
+                <textarea id="textFromCard" name="textFromCard" rows="10" cols="45" maxlength="300">{{text}}</textarea>
+                <div id="the-count">
+                    Character Limit: <span id="current">0</span>
+                    <span id="maximum">/ 160</span>
+                </div>
                 <div class="buttonGroup">
-                    <button>Get Text Verified (MT)</button>
-                    <button id="printLabel">Print Label</button>
+                    <button id="printLabel">Generate Label</button>
+                    <a href="{{ url_for('cardPreview') }}"><button id="finishedPrinting">Done</button></a>
                 </div>
             </div>
         </div>
     </main>
     <script>
+
         $('#printLabel').click(function(){
-            var theText = document.getElementById("textFromCard").value;
-            $.ajax({
-                type: "POST",
-                url: "{{ url_for("saveLabel") }}",
-                contentType: "application/json",
-                data: JSON.stringify(theText),
-                dataType: "json",
-                success: function(response) {
-                    console.log(response);
-                },
-                error: function(err) {
-                    console.log(err);
-                }
-            });
+            var charLimit = document.getElementById("current").textContent;
+
+            if (charLimit > 160){
+                alert("The text is too long. Please condense to generate Braille label.");
+            } else {
+                var theText = document.getElementById("textFromCard").value;
+                $.ajax({
+                    type: "POST",
+                    url: "{{ url_for("saveLabel") }}",
+                    contentType: "application/json",
+                    data: JSON.stringify(theText),
+                    dataType: "json",
+                    success: function(num) {
+                        console.log(num);
+                        document.getElementById("labelCounter").textContent = num + 1;
+                    },
+                    error: function(err) {
+                        console.log(err);
+                    }
+                });
+            }
         });
+
+        function count_word( val ){
+        var wom = val.match(/\S+/g);
+        return {
+            words : wom ? wom.length : 0
+        };
+        }
+        var textContent = document.getElementById("textFromCard");
+        var showWordCount   = document.getElementById("countWord");
+        textContent.addEventListener("input", function(){
+          var v = count_word( this.value );
+
+        }, false);
+
         function showImage(){
             var image = document.getElementById("theImagetoBePrinted");
             var dropdown = document.getElementById("templateNames");
             image.src = 'static/newCards/' + dropdown.value;
             document.getElementById("printInfo").submit();
         };
+
+        function saveAlert(msg, myYes) {
+            var confirmBox = $("#confirm");
+            var sessionBox = $("#session");
+            confirmBox.find(".message").text(msg);
+            confirmBox.find(".save").unbind().click(function() {
+                confirmBox.hide();
+                sessionBox.show();
+            });
+            confirmBox.find(".cancel").unbind().click(function() {
+                confirmBox.hide();
+            });
+            confirmBox.find(".save").click(myYes);
+            confirmBox.show();
+        }
+
+        function cancelSession() {
+            var sessionBox = $("#session");
+            var confirmBox = $("#confirm");
+            document.getElementById("sessionName").value = "";
+            confirmBox.show();
+            sessionBox.hide();
+        }
+
+        $('#finishedPrinting').click(function(){
+            $.ajax({
+               url: "{{ url_for ('generateCardPDF') }}",
+               type: "GET",
+               success: function(response) {
+               },
+              error: function(xhr) {
+                //Do Something to handle error
+              }
+            });
+        });
+
+        $('#finishedPrinting').click(function(){
+            var isDone = confirm("Are you finished generating all labels?\nSelect OK to continue or Cancel to keep generating labels.");
+            if(isDone){
+                return true;
+            }else {
+                return false;
+            }
+        });
+
+        $('#toScan').click(function(){
+            var isDone = confirm("Are you sure you want to scan more cards?\nSelect OK to continue or Cancel to keep taking pictures.");
+            if(isDone){
+                return true;
+            }else {
+                return false;
+            }
+        });
+
+        $('#toRetake').click(function(){
+            var isDone = confirm("Are you sure you want to retake the picture of this card?\nSelect OK to continue or Cancel to keep taking labeling.");
+            if(isDone){
+                return true;
+            }else {
+                return false;
+            }
+        });
+
+        $('#toQuit').click(function(){
+            var isDone = confirm("Are you sure you want to quit?\nSelect OK to continue or Cancel to keep taking labeling.");
+            if(isDone){
+                return true;
+            }else {
+                return false;
+            }
+        });
+
+        $('textarea').keyup(function() {
+
+        var characterCount = $(this).val().length,
+          current = $('#current'),
+          maximum = $('#maximum'),
+          theCount = $('#the-count');
+
+            current.text(characterCount);
+
+            if (characterCount <= 60) {
+            maximum.css('color', '#00cc00');
+            current.css('color', '#00cc00');
+            theCount.css('font-weight','normal');
+            }
+            else if (characterCount <= 130 && characterCount > 60) {
+            maximum.css('color', '#ff9900');
+            current.css('color', '#ff9900');
+            theCount.css('font-weight','normal');
+            } else {
+            maximum.css('color','#ff3300');
+            current.css('color','#ff3300');
+            theCount.css('font-weight','bold');
+        }
+        });
     </script>
     </body>
 </html>

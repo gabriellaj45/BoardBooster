@@ -1,0 +1,29 @@
+<html lang="en">
+    <head>
+        <title>LabelGen</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+    </head>
+    <header>
+        <br>
+        <div class="theLeftHeader">
+            <a href="{{ url_for('index') }}"><button class="quitButton">QUIT</button></a>
+        </div>
+        <div class="theMiddleHeader">
+            <b><u>Game:</u></b> {{cardGame}}
+        </div>
+        <div class="theRightHeader">
+            <a href="{{ url_for('theCards') }}"><button class="otherButton">GO BACK</button></a>
+        </div>
+    </header>
+    <body>
+    <p class="directionsText">
+        Now, you will take pictures of the cards. Only scan unique cards, no duplicates. <br><br>
+        <a href="{{ url_for('scanCards') }}"><button type="button" class="directionButton">OK</button></a>
+    </p>
+
+    </body>
+</html>

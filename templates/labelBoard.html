@@ -1,0 +1,26 @@
+<html lang="en">
+    <head>
+        <title>LabelGen</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <!--<link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">-->
+        <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/annotorious.css') }}"/>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/annotorious.min.js') }}"></script>
+    </head>
+    <header>
+        <br>
+        <a href="{{ url_for('index') }}"><button id="headerButton">QUIT</button></a>
+        <br>
+    </header>
+    <h1>Testing Annotorious</h1>
+    <br>
+    <body>
+        <div class="content">
+          <div class="content-inner">
+              <img class="annotatable" src="static/perfectExample.jpg"/>
+          </div>
+        </div>
+    </body>
+</html>

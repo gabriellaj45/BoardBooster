@@ -11,7 +11,11 @@ https://stackoverflow.com/questions/59370905/flask-calling-python-function-that-
         <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
     </head>
     <header>
-        <span class="imageHelp">
+        <br>
+        <a href="{{ url_for('index') }}"><button id="headerButton">QUIT</button></a>
+    </header>
+    <body>
+        <h1>Creating Templates</h1><span class="imageHelp">
         <font color="red">Need Help?</font>
         <div class="imageHelpText">
             Image Should Look Something Like This
@@ -19,15 +23,11 @@ https://stackoverflow.com/questions/59370905/flask-calling-python-function-that-
             <img src="static/action.jpg">
         </div>
         </span>
-        <a href="{{ url_for('stepTwo') }}"><button id="headerButton">Home</button></a>
-    </header>
-    <body>
-        <h1>Creating Templates</h1>
         <span id="firstStep">
             <font color="red"><h2>Save image when the quality is at its best</h2></font>
         </span>
         <span id="secondStep">
-            <font color="green"><h2>Name template if you like image, discard if not</h2></font>
+            <font color="green"><h2>If image is good, take picture of another type of card. If not, discard</h2></font>
         </span>
 
         <img height="400" src="{{ url_for('videoFeed') }}">
@@ -36,16 +36,9 @@ https://stackoverflow.com/questions/59370905/flask-calling-python-function-that-
         <div class="buttonGroup">
             <button type="button" id="thePic" onclick="showInstructions()">Take Picture</button>
             <button type="button" id="theDiscard" onclick="changeInstructions()">Discard Picture</button>
-            <a id="isDone" href="{{ url_for('labelRegions') }}"><button>Done</button></a>
+            <a id="isDone" href="{{ url_for('cardParts') }}"><button>Done</button></a>
         </div>
 
-        <form id="templateNaming" action="" method="POST">
-            <label for="theTemplateName">Template Name:</label>
-            <input type="text" id="theTemplateName" name="theTemplateName" required>
-            <input type="submit" value="Save Template" class="submitButton">
-        </form>
-
-        <!--<script src="{{ url_for('static', filename='js/createTemplate.js') }}"></script>-->
         <script>
         function showInstructions() {
             document.getElementById("secondStep").style.display = 'inline';
@@ -69,10 +62,12 @@ https://stackoverflow.com/questions/59370905/flask-calling-python-function-that-
                     //Do Something to handle error
                   }
                 });
-            });
-            $('#theSave').click(function(){
                 $.ajax({
                    url: "{{ url_for ('saveImage') }}",
+                   type: "GET",
+                   success: function(response) {
+
+                   },
                   error: function(xhr) {
                     //Do Something to handle error
                   }
@@ -80,7 +75,7 @@ https://stackoverflow.com/questions/59370905/flask-calling-python-function-that-
             });
             $('#theDiscard').click(function(){
                 $.ajax({
-                   url: "{{ url_for ('getImage') }}",
+                   url: "{{ url_for ('discardImage') }}",
                    type: "GET",
                    success: function(response) {
                        $("#theImage").attr('src', '');
@@ -91,7 +86,7 @@ https://stackoverflow.com/questions/59370905/flask-calling-python-function-that-
                 });
             });
             $('#isDone').click(function(){
-                var isDone = confirm("Are you finished taking pictures of cards?\nSelect OK to continue or Cancel to keep taking pictures.");
+                var isDone = confirm("Are you finished taking pictures of the different type of cards?\nSelect OK to continue or Cancel to keep taking pictures.");
                 if(isDone){
                     return true;
                 }else {

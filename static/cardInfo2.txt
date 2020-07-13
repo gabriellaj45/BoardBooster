@@ -1,0 +1,9 @@
+30,static/newCards/action.jpg,Trash a Treasure card from your hand
+30,static/newCards/action.jpg,Trash a Treasure card from your hand
+31,static/newCards/3.jpg,is a slippery slope
+30,static/newCards/action.jpg,Trash a Treasure card from your hand
+30,static/newCards/action.jpg,This is a test
+30,static/newCards/0.png,Witch +2 Cards Each other player gains a Curse card.
+31,static/newCards/action.jpg,Trash a Treasure card from your hand
+30,static/newCards/0.png,Remodel Trash a card from your hand Gain a card costing up to two more than the trashed card Cost 4 Action
+31,static/newCards/0.png,Remodel Trash a card from your hand Gain a card costing up to two more than the trashed card Cost 4 Action

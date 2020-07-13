@@ -1,0 +1,18 @@
+<doctype html>
+<title>New Game - Flask Card Database</title>
+<h2>New Game</h2>
+
+{% from "_formhelpers.html" import render_field %}
+<form method=post>
+    <dl>
+        {{ render_field(form.cardGame) }}
+        {{ render_field(form.cardPart) }}
+        {{ render_field(form.coors) }}
+        {{ render_field(form.text) }}
+        {{ render_field(form.symbol) }}
+        {{ render_field(form.color) }}
+        {{ render_field(form.templateFile) }}
+    </dl>
+    <p><input type=submit value=Submit>
+</form>
+</doctype>

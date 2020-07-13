@@ -1,0 +1,134 @@
+<!--https://stackoverflow.com/questions/58924015/how-to-display-image-in-flask-after-a-button-is-pressed
+https://stackoverflow.com/questions/59370905/flask-calling-python-function-that-return-image-on-button-onclick
+https://www.tutorialspoint.com/How-to-design-a-custom-alert-box-using-JavaScript-->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Scan Board</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+    </head>
+    <header>
+        <div class="theLeftHeader">
+            <a href="{{ url_for('index') }}"><button class="quitButton">QUIT</button></a>
+        </div>
+        <div class="theMiddleHeader">
+            <b><u>Game:</u></b> {{cardGame}}
+        </div>
+        <div class="theRightHeader">
+            <a href="{{ url_for('theBoard') }}"><button class="otherButton">GO BACK</button></a>
+        </div>
+    </header>
+    <body>
+        <audio id="myAudio">
+          <source src="cameraClick.mp3" type="audio/mpeg">
+        </audio>
+
+        <h1>SCAN BOARD</h1>
+        <div class="theLeft3">
+            <b>Cards Scanned:</b> <span id="cardCounter"> 0 </span>
+        </div>
+        <div class="theMiddle3">
+            <font color="red"><b><u>Press Enter to take a picture when the system says it is good</u></b></font>
+        </div>
+        <div class="theRight3">
+            <b>Session Name:</b> {{sessionName}}
+        </div>
+
+        <img class="soloImage" width="80%" src="{{ url_for('videoFeed') }}" alt="Camera Feed">
+        <a href="{{ url_for('boardAnnotation') }}"><button id="buttonDone">DONE</button></a>
+        <script>
+        var cardScanned = 0;
+        document.addEventListener('keydown', logKey);
+
+        function logKey(e) {
+            if(e.code == 'Enter') {
+                cardScanned++;
+                $.ajax({
+                   url: "{{ url_for ('saveBoardImage') }}",
+                  error: function(xhr) {
+                    //Do Something to handle error
+                  }
+                });
+                document.getElementById("cardCounter").textContent = cardScanned;
+            }
+        }
+
+        function saveAlert(msg, myYes) {
+            var confirmBox = $("#confirm");
+            var sessionBox = $("#session");
+            confirmBox.find(".message").text(msg);
+            confirmBox.find(".save").unbind().click(function() {
+                confirmBox.hide();
+                sessionBox.show();
+            });
+            confirmBox.find(".cancel").unbind().click(function() {
+                confirmBox.hide();
+            });
+            confirmBox.find(".save").click(myYes);
+            confirmBox.show();
+        }
+
+         function finishAlert(msg, myYes) {
+            var finishBox = $("#finish");
+            finishBox.find(".message").text(msg);
+            finishBox.find(".no").unbind().click(function() {
+               finishBox.hide();
+            });
+            finishBox.find(".yes").click(myYes);
+            finishBox.show();
+         }
+
+         function changeGame(msg, myYes) {
+            var wrongBox = $("#wrongGame");
+            wrongBox.find(".message").text(msg);
+            wrongBox.find(".yes").unbind().click(function() {
+               wrongBox.hide();
+            });
+            wrongBox.find(".yes").click(myYes);
+            wrongBox.show();
+         }
+
+        function saveSession() {
+            var sessionBox = $("#session");
+            var theText = document.getElementById("sessionName").value;
+            console.log(theText);
+            document.getElementById("sessionName").value = "";
+            sessionBox.hide();
+        }
+
+        function cancelSession() {
+            var sessionBox = $("#session");
+            var confirmBox = $("#confirm");
+            document.getElementById("sessionName").value = "";
+            confirmBox.show();
+            sessionBox.hide();
+        }
+
+        function findInfo(){
+            var info = document.getElementById("cardInfo").value;
+            if (info == 'color') {
+                $.getJSON('/getColor', function(data) {
+                  //do nothing
+                });
+                return false;
+            }
+            if (info == 'category') {
+                $.getJSON('/getType', function(data) {
+                  //do nothing
+                });
+                return false;
+            }
+            if (info == 'text') {
+                $.getJSON('/getText', function(data) {
+                  //do nothing
+                });
+                return false;
+            }
+        };
+        </script>
+    </body>
+</html>

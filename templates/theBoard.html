@@ -1,0 +1,50 @@
+<!--https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_filter_list
+https://pythonise.com/series/learning-flask/flask-uploading-files
+https://flask.palletsprojects.com/en/1.1.x/patterns/fileuploads/-->
+<html lang="en">
+    <head>
+        <title>LabelGen</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+    </head>
+    <header>
+        <br>
+        <a href="{{ url_for('index') }}"><button id="headerButton">QUIT</button></a>
+        <br>
+    </header>
+    <body>
+    <h1>Does {{cardGame}} have a board?</h1>
+    <br>
+    <div class="buttonGroup">
+        <button type="button" id ="boardYes" onclick="showStep()">Yes</button>
+        <a href="{{ url_for('gamePieces') }}"><button type="button" id ="boardNo">No</button></a>
+    </div>
+    <br><br>
+    <div id="secondStep">
+        <h1>Do you have an image of the board?</h1>
+        <br>
+        <div class="buttonGroup">
+            <button type="button" id ="digitalYes" onclick="showNextStep()">Yes</button>
+            <a href="{{ url_for('scanBoard') }}"><button type="button" id ="digitalNo">No</button></a>
+        </div>
+    </div>
+    <br><br>
+    <div id="thirdStep">
+        <form action="/theBoard" method="POST" enctype="multipart/form-data">
+            <input type="file" id="image" name="image">
+            <input type="submit" value="Upload" class="submitButton">
+        </form>
+    </div>
+    <script>
+        function showStep() {
+            document.getElementById("secondStep").style.display = "block";
+        }
+        function showNextStep() {
+            document.getElementById("thirdStep").style.display = "block";
+        }
+    </script>
+    </body>
+</html>

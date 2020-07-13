@@ -18,6 +18,6 @@ cardImage = cv2.threshold(cardImage, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU
 cv2.imwrite('cardImage.jpg', cardImage)
 '''
 # text = pytesseract.image_to_string(Image.open('Cards Against Humanity/cardTemplates/White.jpg'))
-text = pytesseract.image_to_string(Image.open('extractedRegion.jpg'))
+text = pytesseract.image_to_string(Image.open('more300.jpg'))
 # text = text.replace("_", "(blank)")
 print(text)

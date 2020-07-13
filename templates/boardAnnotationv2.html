@@ -1,0 +1,204 @@
+<!--https://www.codicode.com/art/how_to_draw_on_a_html5_canvas_with_a_mouse.aspx
+https://evoluteur.github.io/braille-tools/index.html
+https://interactjs.io/-->
+<html lang="en">
+    <head>
+        <title>Board Annotation</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/braille-small-3d.css') }}">
+        <script src="{{url_for('static', filename='js/braille-tools.js')}}"></script>
+        <!--<link rel="stylesheet" href="{{ url_for('static', filename='css/drop.css') }}">-->
+        <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+        <script src="{{url_for('static', filename='js/dragAndDrop.js')}}"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+        <script src="{{url_for('static', filename='js/html2canvas.js')}}"></script>
+
+    </head>
+    <header>
+        <div class="theLeftHeader">
+            <a href="{{ url_for('index') }}"><button class="quitButton">QUIT</button></a>
+        </div>
+        <div class="theMiddleHeader">
+            <br>
+            <b><u>Game:</u></b> {{cardGame}}
+        </div>
+        <div class="theRightHeader">
+            <a href="{{ url_for('theBoard') }}"><button class="otherButton">GO BACK</button></a>
+        </div>
+    </header>
+    <h1>Annotate Board</h1>
+    <body onload="InitThis();">
+
+        <div class="column theLeft4">
+            <span class="imageHelp">
+            <font color="red">***TIPS**</font>
+                <div class="imageHelpText">
+                    <ul>
+                        <li>How does the player move pieces</li>
+                        <li>What visual information is important</li>
+                        <li>Are there spaces that are special</li>
+                        <li>What components of the board are dynamic</li>
+                    </ul>
+                </div>
+            </span>
+            <br><br>
+            <h2>Type text you want translated to Braille</h2>
+            <input id="txtBraille" type="text">
+            <br>
+            <button id="btnBraille" type="submit" style="width:75%" onclick="showBraille()">Show Braille</button>
+            <br><br>
+            <div id="newNodes">
+                <p id="myBraille">
+                </p>
+            </div>
+        </div>
+        <div class="column theMiddle4" id="annotations">
+            <img src="" width="800" height="800" id="boardAnnotate" alt="Image of the Board to Annotate" style="display:none;">
+            <div id="container" class="dropzone" style="background-color: blue; width:775px; height:775px;">
+                <canvas  id="myCanvas" width="775" height="775"></canvas>
+            </div>
+        </div>
+        <div class="column theRight4">
+            <button style="width:80%" onclick="clearArea();">Clear Area</button><br>
+            Line width : <select id="selWidth">
+                <option value="1">1</option>
+                <option value="3">3</option>
+                <option value="5" selected="selected">5</option>
+                <option value="7">7</option>
+            </select><br>
+            Color : <select id="selColor">
+                <option value="black">black</option>
+                <option value="blue">blue</option>
+                <option value="red" selected="selected">red</option>
+                <option value="green">green</option>
+                <option value="yellow">yellow</option>
+            </select><br><br>
+            <button id="saveCanvas" onclick="screenshot()" style="width:80%">FINISHED</button>
+        </div>
+        <script>
+        var idNum = 0;
+        function showStep() {
+            document.getElementById("secondStep").style.display = "block";
+        }
+        function showNextStep() {
+            document.getElementById("thirdStep").style.display = "block";
+        }
+
+        function showBraille() {
+            var message = document.getElementById("txtBraille").value;
+            var tag = document.createElement("p");
+            document.getElementsByTagName("p")[idNum].setAttribute("class", "braille drag-drop");
+            document.getElementsByTagName("p")[idNum].setAttribute("id", idNum);
+            document.getElementsByTagName("p")[idNum].setAttribute("style", "background-color: transparent");
+            document.getElementById(idNum).innerHTML = br.braille(message);
+            var element = document.getElementById("newNodes");
+            element.appendChild(tag);
+            idNum = idNum + 1;
+        }
+
+        var mousePressed = false;
+        var lastX, lastY;
+        var ctx;
+        var img = document.getElementById('boardAnnotate');
+
+        function InitThis() {
+            ctx = document.getElementById('myCanvas').getContext("2d");
+            img.src = 'static/uploads/board/theBoard.png';
+
+            img.onload = function(){
+              ctx.drawImage(img,0,0);
+            };
+
+            $('#myCanvas').mousedown(function (e) {
+                mousePressed = true;
+                Draw(e.pageX - $(this).offset().left, e.pageY - $(this).offset().top, false);
+            });
+
+            $('#myCanvas').mousemove(function (e) {
+                if (mousePressed) {
+                    Draw(e.pageX - $(this).offset().left, e.pageY - $(this).offset().top, true);
+                }
+            });
+
+            $('#myCanvas').mouseup(function (e) {
+                mousePressed = false;
+            });
+                $('#myCanvas').mouseleave(function (e) {
+                mousePressed = false;
+            });
+        }
+
+        function Draw(x, y, isDown) {
+            if (isDown) {
+                ctx.beginPath();
+                ctx.strokeStyle = $('#selColor').val();
+                ctx.lineWidth = $('#selWidth').val();
+                ctx.lineJoin = "round";
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(x, y);
+                ctx.closePath();
+                ctx.stroke();
+            }
+            lastX = x; lastY = y;
+        }
+
+        function clearArea() {
+            // Use the identity matrix while clearing the canvas
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            ctx.drawImage(img,0,0);
+        }
+
+        $('#sav').click(function(){
+            var canvas = document.getElementById("myCanvas");
+            var img    = canvas.toDataURL("image/png");
+            document.write('<img src="'+img+'"/>');
+            //var image = canvas.toDataURL("image/jpg");
+            //el.href = image;
+        });
+
+        download_img = function(el) {
+          var image = canvas.toDataURL("image/jpg");
+          el.href = image;
+        };
+
+        var takeScreenShot = function() {
+            html2canvas(document.getElementById("container"), {
+                allowTaint: true,
+                onrendered: function (canvas) {
+                    var tempcanvas=document.createElement('canvas');
+                    tempcanvas.width=775;
+                    tempcanvas.height=775;
+                    var context=tempcanvas.getContext('2d');
+                    context.drawImage(canvas, 0, 0, 775, 775);
+                    var link=document.createElement("a");
+                    link.href=tempcanvas.toDataURL('image/jpg');   //function blocks CORS
+                    link.download = 'screenshot.jpg';
+                    link.click();
+                }
+            });
+        }
+
+        function screenshot(){
+            html2canvas(document.body).then(function(canvas) {
+                //document.body.appendChild(canvas);
+                var tempcanvas=document.createElement('canvas');
+                tempcanvas.width=775;
+                tempcanvas.height=775;
+                var context=tempcanvas.getContext('2d');
+                context.drawImage(canvas, 475, 185, 1550, 1550, 0, 0, 775, 775);
+                var link=document.createElement("a");
+                link.href=tempcanvas.toDataURL('image/jpg');   //function blocks CORS
+                link.download = 'screenshot.jpg';
+                link.click();
+        });
+        }
+
+        </script>
+    </body>
+</html>
