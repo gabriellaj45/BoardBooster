@@ -5,7 +5,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+        <!--<link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">-->
+        <link rel="stylesheet" type="text/css" href="/static/css/labelGen.css">
+        <link rel="shortcut icon" href="static/monopolyTactileOverlay2.ico">
+        <!--<link rel="shortcut icon" href="{{ url_for('static', filename='monopolyTactileOverlay2.ico') }}">-->
     </head>
     <header>
         <br>
@@ -20,6 +23,7 @@
         </div>
     </header>
     <body>
+    <br><br>
     <h1>Are there symbols you weren't able to label on the card templates?</h1>
     <br>
     <div class="buttonGroup">
@@ -32,7 +36,7 @@
         <br>
         <div class="buttonGroup">
             <a href="{{ url_for('symbolUpload') }}"><button type="button" id ="digitalYes">Yes</button></a>
-            <a href="{{ url_for('scanSymbols') }}"><button type="button" id ="digitalNo">No</button></a>
+            <a href="{{ url_for('printLabel') }}"><button type="button" id ="digitalNo">No</button></a>
         </div>
     </div>
     <br><br>

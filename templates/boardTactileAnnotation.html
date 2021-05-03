@@ -1,75 +1,138 @@
 <!--https://www.codicode.com/art/how_to_draw_on_a_html5_canvas_with_a_mouse.aspx
 https://evoluteur.github.io/braille-tools/index.html
 https://interactjs.io/
-https://jsfiddle.net/codepo8/V6ufG/2/-->
+https://www.w3schools.com/jsref/met_select_add.asp
+https://stackoverflow.com/questions/42822402/saving-canvas-background-along-with-canvas-contents
+https://stackoverflow.com/questions/49885020/drawing-a-straight-line-using-mouse-events-on-canvas-in-javascript
+https://stackoverflow.com/questions/53960651/how-to-make-an-undo-function-in-canvas
+https://stackoverflow.com/questions/36472094/how-to-set-image-to-fit-width-of-the-page-using-jspdf
+https://designbundles.net/design-school/how-to-convert-a-jpeg-to-svg-in-inkscape-->
 <html lang="en">
     <head>
-        <title>Board Annotation</title>
+        <title>Board Tactile Annotation</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/braille-small-3d.css') }}">
         <script src="{{url_for('static', filename='js/braille-tools.js')}}"></script>
-        <!--<link rel="stylesheet" href="{{ url_for('static', filename='css/drop.css') }}">-->
-        <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
-        <script src="{{url_for('static', filename='js/dragAndDrop.js')}}"></script>
-        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jspdf/1.4.1/jspdf.min.js"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='monopolyTactileOverlay2.ico') }}">
     </head>
     <header>
-        <div class="theLeftHeader">
+        <div class="theLeftHeader" id="theHeader">
             <a href="{{ url_for('index') }}"><button class="quitButton">QUIT</button></a>
         </div>
         <div class="theMiddleHeader">
-            <br>
-            <b><u>Game:</u></b> {{cardGame}}
+            <h1 style="font-size: 24px;">Tactile Overlay for Board</h1>
         </div>
         <div class="theRightHeader">
-            <a href="{{ url_for('theBoard') }}"><button class="otherButton">GO BACK</button></a>
+            <a href="{{ url_for('theChecklist') }}"><button class="otherButton">GO BACK</button></a>
         </div>
     </header>
-    <body onload="InitThis();">
-        <h1>Annotate Board</h1>
-        <span class="imageHelp">
-            <font color="red">***TIPS**</font>
-            <div class="imageHelpText">
-                <ul>
-                    <li>How does the player move pieces</li>
-                    <li>What visual information is important</li>
-                    <li>Are there spaces that are special</li>
-                    <li>What components of the board are dynamic</li>
-                </ul>
-            </div>
-        </span>
+    <body>
+    <!--
         <div class="column theLeft4">
-            <h2>Draw tactile markers on the board</h2>
-            <img src="" width="800" height="800" id="boardAnnotate" alt="Image of the Board to Annotate" style="display:none;">
-            <canvas id="myCanvas" width="775" height="775"></canvas>
+            <br><br>
+
+            <!--
+            <h2>Enter the text from the board that you want translated to Braille.</h2>
+            <input id="txtBraille" type="text"><br>
+            How many times does that text appear?<input id="txtBrailleQuantity" type="number" step="1" required value="1">
+            <br><br>
+            <button id="btnBraille" style="width:75%" onclick="addText()">Add</button>
+            <br><br>
+            <form>
+                <select id="textForBraille" size="7" style="width: 75%;">
+                </select>
+            </form>
+            <button onclick="removeText()" style="width:75%">Remove Selected</button>
+
+        </div>-->
+        <div class="column theeLeft2">
+            <font color="green" style="font-size: 30px;"><b>STEP ONE</b></font><br>
+            <!--
+            <span class="imageHelp">
+            <b><font color="red"> ***START HERE***</font></b>
+                <div class="imageHelpText">
+                    <ol>
+                        <li>Draw an outline for each game space</li>
+                        <li>Draw an outline of where cards are placed, if applicable</li>
+                        <li>Denote any important images or visual information with shapes or outline</li>
+                        <li>Make sure you have created Braille labels for any text</li>
+                    </ol>
+                </div>
+            </span>-->
+            <b> Use the cursor to draw a tactile overlay on the board</b>
+            <br>
+            <font color="red"><b>Select a drawing method:</b></font>
+            <input type="radio" id="freeHand" name="drawingType" value="freeHand" onclick="freeHandDrawing()">
+            <label for="freeHand"> Freehand</label>
+            <input type="radio" id="theLines" name="drawingType" value="theLines" onclick="lineDrawing()">
+            <label for="theLines"> Lines</label><br>
+            <div id="container">
+                <img src="static/uploads/theBoard.png" width="775" height="775" id="boardAnnotate" alt="Image of the Board to Annotate" style="display:none;">
+                <canvas style="background-image: url('static/uploads/theBoard.png');" id="myCanvas" width="775" height="775"></canvas>
+                <canvas id="drawingCanvas" width="775" height="775"></canvas>
+            </div>
         </div>
-        <div class="column theRight4">
-            <button style="width:100%" onclick="clearArea();">Clear Area</button><br>
-            Line width : <select id="selWidth">
-                <option value="1">1</option>
-                <option value="3">3</option>
-                <option value="5" selected="selected">5</option>
-                <option value="7">7</option>
-            </select><br>
-            Color : <select id="selColor">
-                <option value="black">black</option>
-                <option value="blue">blue</option>
-                <option value="red" selected="selected">red</option>
-                <option value="green">green</option>
-                <option value="yellow">yellow</option>
-            </select><br><br>
-            <button id="saveCanvas" style="width:100%">FINISHED</button>
+        <div class="column theeRight2">
+            <br><br>
+            <button style="width:47%" onclick="clearArea();">Clear</button>
+            <button style="width:45%" onclick="undoLastLine();">Undo</button><br>
+            <hr>
+            <!--
+            <font color="orange" style="font-size: 20px;"><b>STEP THREE</b></font><br>
+            <b>Enter the dimensions of your board in inches</b>-->
+            <form style="display: none;">
+                <label for="boardWidth">Board Width:</label><br>
+                <input type="text" id="boardWidth" name="boardWidth" placeholder="12.75" value="{{boardW}}"><br>
+                <label for="boardHeight">Board Height:</label><br>
+                <input type="text" id="boardHeight" name="boardHeight" placeholder="8" value="{{boardH}}">
+                <input type="submit" class="submitButton" value="FINISHED" style="width:80%" onclick="takeScreenShot()">
+            </form>
+            <font color="purple" style="font-size: 30px;"><b>STEP TWO</b></font><br>
+            <button id="tactileDone" style="width:80%">FINISHED</button>
+            <br><br>
+            <form action="/boardTactileAnnotation" method="POST" enctype="multipart/form-data" id="boardForm">
+                <b>Upload the files that were just downloaded</b>
+                <br>
+                Filename: tactileOverlay.pdf, boardImage.jpeg, lasercut.jpeg
+                <input type="file" id="myFile" name="board[]" multiple="true">
+                <input type="submit" class="submitButton" value="Upload" onclick="return checkFile();">
+            </form>
         </div>
         <script>
+        window.onload = function() {
+            var c = document.getElementById("myCanvas");
+            var ctx = c.getContext("2d");
+            var img = document.getElementById("boardAnnotate");
+            ctx.drawImage(img, 0, 0);
+        };
+
+        $('#tactileDone').click(function(){
+            var isDone = confirm("Are you finished creating the tactile overlay for the board?\nSelect OK to continue " +
+            "or Cancel to keep creating the overlay.");
+            if(isDone){
+                document.getElementById("boardForm").style.display = "block";
+                drawTactileOverlay();
+                return true;
+            }else {
+                return false;
+            }
+        });
+        document.addEventListener('keydown', logKey);
+        var picHeight = 0;
+        var picWidth = 0;
+        var boardWidth = 0;
+        var boardHeight = 0;
         var idNum = 0;
+        var prevIDNum = -1;
+
         function showStep() {
             document.getElementById("secondStep").style.display = "block";
         }
+
         function showNextStep() {
             document.getElementById("thirdStep").style.display = "block";
         }
@@ -84,87 +147,401 @@ https://jsfiddle.net/codepo8/V6ufG/2/-->
             var element = document.getElementById("newNodes");
             element.appendChild(tag);
             idNum = idNum + 1;
+
+            $.ajax({
+                type: "POST",
+                url: "/saveBraille",
+                contentType: "application/json",
+                data: JSON.stringify(message),
+                dataType: "json",
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
         }
 
         var mousePressed = false;
         var lastX, lastY;
-        var ctx;
         var img = document.getElementById('boardAnnotate');
+        var canvasWidth = 775;
+        var canvasHeight = 775;
+        var canvas = document.getElementById('myCanvas');
+        var bounds = canvas.getBoundingClientRect();
+        var ctx = document.getElementById('myCanvas').getContext("2d");
+        var hasLoaded = false;
 
-        function InitThis() {
-            ctx = document.getElementById('myCanvas').getContext("2d");
-            img.src = 'static/uploads/board/theBoard.png';
+        var startX = 0;
+        var startY = 0;
+        var mouseX = 0;
+        var mouseY = 0;
+        var mouseUp = false;
+        var isDrawing = false;
+        var freeHand = false;
+        var lineDraw = false;
+        var existingLines = [];
+        var canvasOffset = $("#myCanvas").offset();
+        var offsetX = canvasOffset.left;
+        var offsetY = canvasOffset.top;
+        ctx.strokeStyle = "red";
+        ctx.lineWidth = 2;
 
-            img.onload = function(){
-              ctx.drawImage(img,0,0);
-            };
+        var isDown = false;
 
+        var lines = [];
+        let freeHandPoints = [];
+        let freeHandPointsArray = [];
+        let drawing = false;
+        var mouse = {x: 0, y: 0};
+        var previous = {x: 0, y: 0};
+
+
+        $('#myCanvas').mousedown(function (e) {
+            if(!document.getElementById('freeHand').checked && !document.getElementById('theLines').checked) {
+                alert("Select a drawing method 1st: Freehand or Lines");
+            }
+        });
+
+        function freeHandDrawing() {
+            freeHand = true;
+            lineDraw = false;
             $('#myCanvas').mousedown(function (e) {
-                mousePressed = true;
-                Draw(e.pageX - $(this).offset().left, e.pageY - $(this).offset().top, false);
+                if(freeHand) {
+                    drawing = true;
+                    previous = {x:mouse.x,y:mouse.y};
+                    mouse = oMousePos(canvas, e);
+                    freeHandPoints = [];
+                    freeHandPoints.push({x:mouse.x,y:mouse.y})
+                }
             });
 
             $('#myCanvas').mousemove(function (e) {
-                if (mousePressed) {
-                    Draw(e.pageX - $(this).offset().left, e.pageY - $(this).offset().top, true);
+                if(freeHand) {
+                    if(drawing){
+                        previous = {x:mouse.x,y:mouse.y};
+                        mouse = oMousePos(canvas, e);
+                        // saving the points in the points array
+                        freeHandPoints.push({x:mouse.x,y:mouse.y})
+                        // drawing a line from the previous point to the current point
+                        ctx.beginPath();
+                        ctx.moveTo(previous.x,previous.y);
+                        ctx.lineTo(mouse.x,mouse.y);
+                        ctx.stroke();
+                    }
                 }
             });
 
             $('#myCanvas').mouseup(function (e) {
-                mousePressed = false;
-            });
-                $('#myCanvas').mouseleave(function (e) {
-                mousePressed = false;
+                if(freeHand) {
+                    drawing = false;
+                    // Adding the path to the array or the paths
+                    freeHandPointsArray.push(freeHandPoints);
+                }
             });
         }
 
+        function lineDrawing() {
+            freeHand = false;
+            lineDraw = true;
+            $('#myCanvas').mousedown(function (e) {
+                if(lineDraw) {
+                    if (!isDrawing) {
+                        mouse = oMousePos(canvas, e);
+                        startX = mouse.x;
+                        startY = mouse.y;
+                        //startX = e.clientX - bounds.left;
+                        //startY = e.clientY - bounds.top;
+                        isDrawing = true;
+                    }
+                    draw();
+                }
+            });
+
+            $('#myCanvas').mousemove(function (e) {
+                if(lineDraw) {
+                    mouse = oMousePos(canvas, e);
+                    mouseX = mouse.x;
+                    mouseY = mouse.y;
+                    //mouseX = e.clientX - bounds.left;
+                    //mouseY = e.clientY - bounds.top;
+                    if (isDrawing) {
+                        draw();
+                    }
+                }
+            });
+
+            $('#myCanvas').mouseup(function (e) {
+                if(lineDraw) {
+                    if (isDrawing) {
+                        existingLines.push({
+                            startX: startX,
+                            startY: startY,
+                            endX: mouseX,
+                            endY: mouseY
+                        });
+                        isDrawing = false;
+                    }
+                    draw();
+                }
+            });
+        }
+
+        // for freehand
         function Draw(x, y, isDown) {
             if (isDown) {
+                freeHandPoints.push({x:x, y:y})
                 ctx.beginPath();
-                ctx.strokeStyle = $('#selColor').val();
-                ctx.lineWidth = $('#selWidth').val();
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 2;
                 ctx.lineJoin = "round";
                 ctx.moveTo(lastX, lastY);
                 ctx.lineTo(x, y);
-                ctx.closePath();
                 ctx.stroke();
+                ctx.closePath();
             }
             lastX = x; lastY = y;
+        }
+
+        // a function to detect the mouse position
+        function oMousePos(canvas, evt) {
+          var ClientRect = canvas.getBoundingClientRect();
+            return { //objeto
+            x: Math.round(evt.clientX - ClientRect.left),
+            y: Math.round(evt.clientY - ClientRect.top)
+            }
+        }
+
+        // for lines
+        function draw() {
+            // this part is necessary otherwise a ton of lines are drawn
+            var img = document.getElementById("boardAnnotate");
+            var pat = ctx.createPattern(img, "no-repeat");
+            ctx.fillStyle = pat;
+            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+            ctx.closePath();
+            ctx.strokeStyle = "red";
+            ctx.lineWidth = 2;
+            // draw all the paths in the paths array
+            freeHandPointsArray.forEach(path=>{
+                ctx.beginPath();
+                ctx.moveTo(path[0].x,path[0].y);
+                for(let i = 1; i < path.length; i++){
+                    ctx.lineTo(path[i].x,path[i].y);
+                }
+                ctx.stroke();
+            })
+            ctx.closePath();
+
+            for (var i = 0; i < existingLines.length; ++i) {
+                var line = existingLines[i];
+                ctx.beginPath();
+                ctx.moveTo(line.startX,line.startY);
+                ctx.lineTo(line.endX,line.endY);
+                ctx.stroke();
+                ctx.closePath();
+            }
+
+            if (isDrawing) {
+                ctx.strokeStyle = "yellow";
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(startX,startY);
+                ctx.lineTo(mouseX,mouseY);
+                ctx.stroke();
+                ctx.closePath();
+            }
         }
 
         function clearArea() {
             // Use the identity matrix while clearing the canvas
             ctx.setTransform(1, 0, 0, 1, 0, 0);
-            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-            ctx.drawImage(img,0,0);
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+            existingLines = [];
+            undoAllFreeHand();
+
+        }
+        function drawPaths(){
+            // delete everything
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            draw();
+            // draw all the paths in the paths array
+            freeHandPointsArray.forEach(path=>{
+            ctx.beginPath();
+            ctx.moveTo(path[0].x,path[0].y);
+            for(let i = 1; i < path.length; i++){
+                ctx.lineTo(path[i].x,path[i].y);
+            }
+            ctx.stroke();
+            })
         }
 
-        $('#saveCanvas').click(function(){
-            var canvas = document.getElementById("myCanvas");
-            var link = document.createElement('a');
-            link.href = canvas.toDataURL();
-            link.download = "boardBooster_tactileAnnotation.png";
-            link.click();
-            //var img    = canvas.toDataURL("image/png");
-            //document.write('<img src="'+img+'"/>');
-            //var image = canvas.toDataURL("image/jpg");
-            //el.href = image;
-        });
+        function undoFreeHand(){
+            // remove the last path from the paths array
+            freeHandPointsArray.pop();
+            // draw all the paths in the paths array
+            drawPaths();
+        }
 
-        var takeScreenShot = function() {
-            html2canvas(document.getElementById("container"), {
-                onrendered: function (canvas) {
-                    var tempcanvas=document.getElementById('myCanvas');
-                    tempcanvas.width=775;
-                    tempcanvas.height=775;
-                    var context=tempcanvas.getContext('2d');
-                    context.drawImage(canvas, 0, 0, 775, 775);
-                    var link=document.createElement("a");
-                    link.href=tempcanvas.toDataURL('image/jpg');   //function blocks CORS
-                    link.download = 'screenshot.jpg';
-                    link.click();
+        function undoAllFreeHand(){
+            // remove the last path from the paths array
+            freeHandPointsArray = [];
+            // draw all the paths in the paths array
+            drawPaths();
+        }
+
+        function undoLastLine() {
+            if(document.getElementById("theLines").checked) {
+                existingLines.pop();
+                draw();
+            }
+            else if(document.getElementById("freeHand").checked) {
+                undoFreeHand();
+            }
+
+        }
+
+        function takeScreenShot() {
+        /*
+            boardWidth = document.getElementById("boardWidth").value;
+            boardHeight = document.getElementById("boardHeight").value;
+            if(boardWidth == "" || boardHeight == "") {
+                alert('Please enter the dimensions of the board');
+                return false;
+            }*/
+            var isDone = confirm("Are you finished generating Braille labels and drawing the tactile overlay"
+             + " for the board?\n Select OK to continue or Cancel to keep working.");
+            if(isDone){
+                document.getElementById("boardForm").style.display = "block";
+                drawTactileOverlay();
+            }else {
+                return false;
+            }
+        }
+
+        function checkFile() {
+            var file = document.getElementById("myFile");
+
+            if(file.files.length == 0 ){
+                alert('No file selected, please choose a file');
+                return false;
+            }else if (file.files.length != 3 ){
+                alert('Please upload all three files');
+                return false;
+            }else {
+                var x = document.getElementById("textForBraille");
+                var txt = "";
+                var i;
+                for (i = 0; i < x.length; i++) {
+                    txt = txt + x.options[i].text + "\n";
                 }
-            });
+
+                $.ajax({
+                    type: "POST",
+                    url: "/saveBraille",
+                    contentType: "application/json",
+                    data: JSON.stringify(txt),
+                    dataType: "json",
+                    success: function(response) {
+                        console.log(response);
+                    },
+                    error: function(err) {
+                        console.log(err);
+                    }
+                });
+                document.getElementById("myForm").submit();
+            }
+        }
+
+        function logKey(e) {
+            if(e.code == 'Enter') {
+                if ( e.target.nodeName == 'INPUT' ) {
+                    addText();
+                }
+            }
+        }
+
+        function addText() {
+            var x = document.getElementById("textForBraille");
+            var num = document.getElementById("txtBrailleQuantity").value;
+            if (num == "") {
+                alert('Please enter an amount for how many labels');
+            }else {
+                for(i = 0; i < num; i++) {
+                    var option = document.createElement("option");
+                    var textForBraille = document.getElementById("txtBraille").value;
+                    option.text = textForBraille;
+                    x.add(option);
+                }
+                document.getElementById("txtBrailleQuantity").value = "1";
+                document.getElementById("txtBraille").value = "";
+            }
+        }
+
+        function removeText() {
+            var x = document.getElementById("textForBraille");
+            x.remove(x.selectedIndex);
+        }
+
+        function drawTactileOverlay() {
+            boardWidth = document.getElementById("boardWidth").value;
+            boardHeight = document.getElementById("boardHeight").value;
+
+            var theCanvas = document.getElementById("drawingCanvas");
+            var theContext = theCanvas.getContext("2d");
+            theContext.clearRect(0, 0, theCanvas.width, theCanvas.height);
+            theContext.fillStyle = "#FFFFFF";
+            theContext.fillRect(0, 0, theCanvas.width, theCanvas.height);
+            theContext.strokeStyle = "#FF0000";
+            theContext.lineWidth = 2;
+            theContext.strokeRect(0, 0, theCanvas.width, theCanvas.height);
+
+            freeHandPointsArray.forEach(path=>{
+                theContext.beginPath();
+                theContext.moveTo(path[0].x,path[0].y);
+                for(let i = 1; i < path.length; i++){
+                    theContext.lineTo(path[i].x,path[i].y);
+                }
+                theContext.stroke();
+            })
+
+            theContext.beginPath();
+
+            for (var i = 0; i < existingLines.length; ++i) {
+                var line = existingLines[i];
+                theContext.moveTo(line.startX,line.startY);
+                theContext.lineTo(line.endX,line.endY);
+            }
+
+            theContext.stroke();
+
+            // only jpeg is supported by jsPDF
+            if(boardWidth > boardHeight){
+                var pdf = new jsPDF('l', 'in', [boardWidth, boardHeight]);
+            }else{
+                var pdf = new jsPDF('p', 'in', [boardWidth, boardHeight]);
+            }
+            //var pdf = new jsPDF('p', 'in', [boardWidth, boardHeight]);
+            var width = pdf.internal.pageSize.getWidth();
+            var height = pdf.internal.pageSize.getHeight();
+
+            var imgData = theCanvas.toDataURL("image/jpeg", 1.0);
+            pdf.addImage(imgData, 'JPEG', 0, 0, width, height);
+            pdf.save("tactileOverlay.pdf");
+
+            var canvas = document.getElementById("myCanvas");
+            var link=document.createElement("a");
+            link.href=canvas.toDataURL('image/jpeg');
+            link.download = 'boardImage.jpeg';
+            link.click();
+
+            var canvas = document.getElementById("drawingCanvas");
+            var link=document.createElement("a");
+            link.href=canvas.toDataURL('image/jpeg', 1.0);
+            link.download = 'lasercut.jpeg';
+            link.click();
+
         }
 
         </script>

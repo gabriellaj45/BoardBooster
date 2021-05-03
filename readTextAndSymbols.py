@@ -38,19 +38,18 @@ def textAndSymbols(file):
         index = index + 1
 
     textSymbolsDict = OrderedDict(sorted(textSymbolsDict.items(), key=lambda k: [k[1], k[0]]))
-
     finalString = ''
     img = cv2.imread(file)
     if len(symbolsFound) == 0:
-        print('no symbols found')
+        # print('no symbols found')
         finalString = pytesseract.image_to_string(Image.open(file))
     elif len(textFound) == 0:
         finalString = getSymbolName(file)
-        print('no text found')
+        # print('no text found')
     else:
-        print('both found')
+        # print('both found')
         for x, y in textSymbolsDict.items():
-            print(x, y)
+            # print(x, y)
             if 't' in x:
                 textCoors = textSymbolsOGCoors[x]
                 textX1 = int(textCoors[0][0])
@@ -78,7 +77,7 @@ def textAndSymbols(file):
 
                 symbolsFound = getSymbolName('symbolCropped.jpg', y)
                 symbolsFound = set(symbolsFound)
-                print(symbolsFound)
+                # print(symbolsFound)
                 for word in symbolsFound:
                     textSymbolsDict[x] = word
                     finalString = finalString + ' ' + word

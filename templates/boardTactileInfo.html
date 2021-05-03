@@ -1,0 +1,31 @@
+<!--https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_filter_list-->
+<html lang="en">
+    <head>
+        <title>BoardBooster</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='monopolyTactileOverlay2.ico') }}">
+    </head>
+    <header>
+        <br>
+        <a href="{{ url_for('index') }}"><button id="headerButton">QUIT</button></a>
+        <br>
+    </header>
+    <body>
+
+    <h1>Board Tactile Overlay: {{cardGame}}</h1>
+    <div id="">
+        <h2>Board Tactile Overlay</h2>
+        <p>
+            You will create a tactile overlay for the board. A tactile overlay
+        </p>
+        <div class="buttonGroup">
+            <button type="button" id ="back">BACK</button>
+            <a href="{{ url_for('boardAnnotation') }}"><button type="button" id ="brailleLabeling">Continue to Tactile Overlay</button></a>
+        </div>
+    </div>
+    </body>
+</html>

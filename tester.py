@@ -1,56 +1,34 @@
-import numpy as np
-import cv2
-import imutils
+from matchTemplate import *
+from collections import OrderedDict
+import re
 
+finalText = ''
+cardFile = '/Users/superhuman/PycharmProjects/BoardBooster/static/newCards/0.png'
+templateName = matchTemplate(cardFile)
+theImage = cv2.imread(cardFile)
+allRegionCoors = {}
+f = open("static/userData/regions.txt", "r")
+f1 = f.readlines()
 
-image = cv2.imread('cardsAgainstHumanity.jpeg')
+for x in f1:
+    line = re.split('\s', x)
+    for name in line[1:]:
+        regionNames = []
+        name = re.sub(':', ' ', name)
+        labelName = re.split('\s', name)
+        if line[0] == templateName and len(labelName) > 1:
+            labelName[1] = re.sub('\(', '', labelName[1])
+            labelName[1] = re.sub('\)', '', labelName[1])
+            labelName[1] = re.sub(',', ' ', labelName[1])
+            regionNames.append(labelName[1])
+            regionNames = list(filter(lambda a: a != '', regionNames))
+            regionCoors = re.split('\s', regionNames[0])
+            x, y, w, h = regionCoors
+            regionCoors.append(labelName[0])
+            midpoint = (int(x) + int(w)) / 2, (int(y) + int(h)) / 2
+            allRegionCoors[midpoint] = regionCoors
 
-ratio = image.shape[0] / 200.0
-orig = image.copy()
-image = imutils.resize(image, height=200)
-
-hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-
-# defining the range of black color
-blackLowerBound = np.array([0, 0, 0], np.uint8)
-blackUpperBound = np.array([180, 255, 30], np.uint8)
-
-# defining the Range of white color
-whiteLowerBound = np.array([0, 0, 200], np.uint8)
-whiteUpperBound = np.array([180, 255, 255], np.uint8)
-
-
-# finding the range of red,blue and yellow color in the image
-black = cv2.inRange(hsv, blackLowerBound, blackUpperBound)
-white = cv2.inRange(hsv, whiteLowerBound, whiteUpperBound)
-
-# Morphological transformation, Dilation
-kernal = np.ones((5, 5), "uint8")
-
-black = cv2.dilate(black, kernal)
-res = cv2.bitwise_and(image, image, mask=black)
-
-white = cv2.dilate(white, kernal)
-res1 = cv2.bitwise_and(image, image, mask=white)
-
-(_, contours, hierarchy) = cv2.findContours(black, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-
-for pic, contour in enumerate(contours):
-    area = cv2.contourArea(contour)
-    if area > 300:
-        x, y, w, h = cv2.boundingRect(contour)
-        image = cv2.rectangle(image, (x, y), (x + w, y + h), (52, 234, 61), 2)
-        cv2.putText(image, "black color", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (52, 234, 61))
-
-(_, contours, hierarchy) = cv2.findContours(white, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-
-for pic, contour in enumerate(contours):
-    area = cv2.contourArea(contour)
-    if area > 300:
-        x, y, w, h = cv2.boundingRect(contour)
-
-        image = cv2.rectangle(image, (x, y), (x + w, y + h), (52, 234, 61), 2)
-        cv2.putText(image, "white color", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (52, 234, 61))
-
-
-cv2.imwrite("colorDetection.jpg", image)
+# print(v for k, v in sorted(allRegionCoors.items(), key=lambda item: item[0][1]))
+allRegionCoors = sorted(allRegionCoors.items(), key=lambda k: [k[0][1], k[0][0]])
+[print(i[0]) for i in allRegionCoors]
+    # print(allRegionCoors[i][0])

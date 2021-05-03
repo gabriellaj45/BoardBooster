@@ -1,0 +1,90 @@
+<!--https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_filter_list-->
+<html lang="en">
+    <head>
+        <title>BoardBooster</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='monopolyTactileOverlay2.ico') }}">
+    </head>
+    <header>
+        <a href="{{ url_for('index') }}"><button id="headerButton">QUIT</button></a>
+        <br>
+    </header>
+    <body>
+
+    <h1>About Your Game</h1><br>
+    <div id="">
+        <h2>Now we will collect some information about the game.</h2>
+        <form id="gameStuff" action="/gameSpecs" method="post">
+            <label for="gameName">Name of Your Game:</label>
+            <input type="text" id="gameName" name="gameName" placeholder="ex. Monopoly" required><br><br>
+
+            <label>Which of the following components does your game have?</label> <br>
+            <input type="checkbox" id="feature1" name="feature1" value="board" onclick="showBoardSpecs()">
+            <label for="feature1">Physical Game Board</label><br>
+            <div id="additionalQuestions">
+                <!--
+                <label><b>Upload an image of your board</b></label> <br>
+                <input type="file" id="myFile" name="board" required>
+                <input type="submit" class="submitButton" value="Upload" onclick="return checkFile();"><br><br>-->
+                <label for="boardWidth"><b>Enter the dimensions of your board in inches</b></label><br>
+                <label for="boardWidth">Board Width:</label><br>
+                <input type="text" id="boardWidth" name="boardWidth" placeholder="ex. 12.75"><br>
+                <label for="boardHeight">Board Height:</label><br>
+                <input type="text" id="boardHeight" name="boardHeight" placeholder="ex. 8"><br><br>
+            </div>
+            <input type="checkbox" id="feature2" name="feature2" value="instructions">
+            <label for="feature2">Written Instructions</label><br>
+            <!--
+            <div id="additionalQuestions1">
+                <label><b>Upload of a file of your game instructions</b></label> <br>
+                <input type="file" id="instructFile" name="board" required>
+                <input type="submit" class="submitButton" value="Upload" onclick="return checkFile();"><br>
+            </div>-->
+            <input type="checkbox" id="feature3" name="feature3" value="dice">
+            <label for="feature3">Dice or Spinner</label><br>
+            <input type="checkbox" id="feature4" name="feature4" value="cards">
+            <label for="feature4">Game Cards</label><br>
+            <input type="checkbox" id="feature5" name="feature5" value="tokens">
+            <label for="feature5">Game Tokens or Pieces</label><br>
+        </form>
+        <div class="buttonGroup">
+            <a href="{{ url_for('accessWays') }}"><button>BACK</button></a>
+            <button form="gameStuff" type="submit" class="submitButton" id="conButton">CONTINUE</button>
+        </div>
+
+
+    </div>
+    <script>
+        function showBoardSpecs() {
+          // Get the checkbox
+          var checkBox = document.getElementById("feature1");
+          // Get the output text
+          var text = document.getElementById("additionalQuestions");
+
+          // If the checkbox is checked, display the output text
+          if (checkBox.checked == true){
+            text.style.display = "block";
+          } else {
+            text.style.display = "none";
+          }
+        }
+
+        $(document).ready(function () {
+            $('#conButton').click(function() {
+              checked = $("input[type=checkbox]:checked").length;
+
+              if(!checked) {
+                alert("You must check at least one checkbox.");
+                return false;
+              }
+
+            });
+        });
+
+    </script>
+    </body>
+</html>

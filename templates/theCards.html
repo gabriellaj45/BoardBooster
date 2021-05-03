@@ -7,37 +7,38 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='cardBraille2.ico') }}">
     </head>
     <header>
-        <br>
-        <a href="{{ url_for('index') }}"><button id="headerButton">QUIT</button></a>
-        <br>
+        <div class="theLeftHeader1" id="theHeader">
+            <a href="{{ url_for('index') }}"><button class="quitButton">QUIT</button></a>
+        </div>
+        <div class="theRightHeader1">
+            <a href="{{ url_for('theChecklist') }}"><button class="otherButton">GO BACK</button></a>
+        </div>
     </header>
     <body>
-
+    <!--
     <h1>Does {{cardGame}} have any cards?</h1>
     <br>
     <div class="buttonGroup">
-        <button type="button" id ="boardYes" onclick="showStep()">Yes</button>
+        <a href="{{ url_for('cardUpload') }}"><button type="button" id ="digitalYes">Yes</button></a>
         <a href="{{ url_for('accessKit') }}"><button type="button" id ="cardNo">No</button></a>
-    </div>
+    </div>-->
     <br><br>
-    <div id="secondStep">
-        <h1>Do you have a digital file of the cards?</h1>
-        <br>
-        <div class="buttonGroup">
-            <a href="{{ url_for('cardUpload') }}"><button type="button" id ="digitalYes">Yes</button></a>
-            <a href="{{ url_for('differentTemplates') }}"><button type="button" id ="digitalNo">No</button></a>
-        </div>
-    </div>
+    <h2>Scan/Upload Cards</h2>
+    <p>
+        You will create Braille labels for your game cards. Our application will recognize the text in the image of the
+        card you upload or scan. You will need to review the text to make sure that the text is correct, and any other
+        information that is not there, like symbols or the color card. Make sure you are mindful of the character limit.
+    </p>
+    <center><a href="{{ url_for('scanCards') }}"><button disabled>Scan Cards</button></a></center><br>
+    <center><a href="{{ url_for('cardUpload') }}"><button>Upload Cards</button></a></center>
     <script>
-    function showStep() {
-        document.getElementById("secondStep").style.display = "block";
-    }
 
     $('#cardNo').click(function(){
         $.ajax({
-           url: "{{ url_for ('generateAccessKitPDF') }}",
+           url: "/generateAccessKitPDF",
            type: "GET",
            success: function(response) {
               console.log(response);

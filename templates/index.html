@@ -7,11 +7,27 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='monopolyTactileOverlay2.ico') }}">
     </head>
-    <body>
-        <center><img src="static/labelGenLogo.png" height="20%" id="labelGenLogo" alt="The logo for LabelGen"></center>
-        <h1 id="theTitle">Welcome to BoardBooster</h1>
+    <header>
+        <button id="indexButton" onclick="clearExtraFiles()">CLEAR</button>
         <br>
+    </header>
+    <body>
+        <center><img src="https://media.giphy.com/media/Wvp4xUylWGvH9ytpHx/giphy.gif" height="50%" id="boardBoosterLogo" alt="The logo for BoardBooster"></center>
+        <h1 id="theTitle">Welcome to BoardBooster!</h1>
+        <p id="centerText">
+            This application allows user to make an accessibility kit for your board or card game that makes it accessible to
+            blind and visually impaired players.
+
+            BoardBooster will walk you through the process of making the accessibility kit, you will identify which aspects of
+            your game may be inaccessible. Then you will create features that will address these accessibility problems.
+            Finally, BoardBooster will give you instructions about how to implement these changes.
+        </p>
+        <center><a href="{{ url_for('aboutAccessibility') }}"><button>Let's Learn More!</button></a>
+        <a href="{{ url_for('gameSpecs') }}"><button>Build an Accessibility Kit!</button></a></center>
+
+        <!--
         <center><font color="blue">Enter the game you are trying to create a kit for!</font></center>
         <div id="homePage">
             <form action="" method="POST">
@@ -19,25 +35,26 @@
                 <input type="submit" id="cardGame" value="Submit" class="submitButton">
             </form>
         </div>
+
         <div class="bottomInfo">
             BoardBooster gives users a platform to create an accessibility kit for any board game
             <br>
             <p class="theLeftHeader bottomText">
                 <img class="frontPageIcons" src="static/editIcon.png" id="editIcon" alt="The Edit Icon">
                 <br>
-                Annotate board, generate Braille labels
+                Create tactile overlay for board
             </p>
             <p class="theMiddleHeader bottomText">
                 <img class="frontPageIcons" src="static/labelIcon.png" id="labelIcon" alt="The Label Icon">
                 <br>
-                Label important parts of the card
+                Generate Braille labels for board, cards, and pieces
             </p>
             <p class="theRightHeader bottomText">
                 <img class="frontPageIcons" src="static/picIcon.png" id="picIcon" alt="The Picture Icon">
                 <br>
-                Take pictures of the board and cards
+                Upload images of board and cards
             </p>
-        </div>
+        </div>-->
 
     <script>
     function myFunction() {
@@ -56,6 +73,21 @@
             }
         }
     }
+
+    function clearExtraFiles() {
+        $.ajax({
+            type: "POST",
+            url: "/deleteFiles",
+            contentType: "application/json",
+            success: function(response) {
+                alert('All files deleted');
+            },
+            error: function(err) {
+                console.log(err);
+            }
+        });
+    }
+
     </script>
     </body>
 </html>

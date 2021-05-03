@@ -184,6 +184,7 @@ class HistogramColorClassifier:
         arg_max = np.argmax(comparison_array)
         return self.name_list[arg_max]
 
+
     def returnNameList(self):
         """Return a list containing all the names stored in the model.
         @return: a list containing the name of the models.

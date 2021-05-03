@@ -8,95 +8,140 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='monopolyTactileOverlay2.ico') }}">
     </head>
     <header>
         <div class="theLeftHeader">
-            <a href="{{ url_for('index') }}"><button class="quitButton" id="toQuit">QUIT</button></a>
+            <a href="{{ url_for('index') }}"><button class="quitButton">QUIT</button></a>
         </div>
         <div class="theMiddleHeader">
-            <b><u>Card Game:</u></b> {{cardGame}}
+            <a href="{{ url_for('theChecklist') }}"><button class="otherButton">GO BACK</button></a>
         </div>
         <div class="theRightHeader">
-            <a href="{{ url_for('scanCards') }}"><button class="otherButton" id="toScan">SCAN CARDS</button></a>
+            <a href="{{ url_for('theCards') }}"><button class="otherButton" id="toScan">UPLOAD CARDS</button></a>
         </div>
     </header>
-    <body>
+    <body onload="checkLabels()">
     <main role="main">
-        <h1>PRINT PREVIEW</h1>
+        <br>
+        <h1>PRINT PREVIEW for {{cardGame}}</h1>
         <br>
         <div class="row">
             <div class="column theLeft2">
-                <font color="orange">Print Queue</font>
+                <font color="orange" style="font-size: 24px;">Print Queue</font>
                 <form id="printInfo" action="" method="POST">
-                    <select id="templateNames" name="templateNames" size="{{templateLen}}" onChange="showImage()">
+                    <select id="templateNames" name="templateNames" size="10" onChange="showImage()" style="width: 175px;">
                         {%for i in range(0, templateLen)%}
                             <option value="{{templateNames[i]}}">{{templateNames[i]}}</option>
                         {%endfor%}
                     </select>
                 </form>
+                <!--
+                <div class="buttonGroup">
+                    <button id="showLabels" style="width:50%;">Show Labels Generated</button>
+                </div>
+                <object class="theLabels" width="500" height="400" type="text/plain" data="static/userData/labelsGenerated.txt" border="0" id="currLabelInfo">
+                </object>-->
             </div>
             <div class="column theMiddle2">
-                <!--
-                <div class="dialogBox" id="confirm">
-                    <div class="message">Do you want to save the print queue for later?</div>
-                    <br>
-                    <button class="save">Save</button>
-                    <a href="{{ url_for('index') }}"><button class="noSave">Don't Save</button></a>
-                    <button class="cancel">Cancel</button>
-                </div>
-                <div class="promptBox" id="session">
-                    <label class="message">Save Print Session As:</label>
-                    <input type="text" id="sessionName" class="message">
-                    <br>
-                    <a href="{{ url_for('index') }}"><button class="saveSession" onclick="saveSession();">Save</button></a>
-                    <button class="cancel" onclick="cancelSession();">Cancel</button>
-                </div>-->
-                <center><b>Labels Generated:</b> <span id="labelCounter"> 0 </span></center>
+                <center><b>Labels Generated:</b> <span id="labelCounter"> 0</span>/{{templateLen}}</center>
                 <img src="{{img}}" id="theImagetoBePrinted" alt="Image to Be Printed">
-                <br>
-                <a href="{{ url_for('scanCards') }}"><button id="toRetake">Retake Picture</button></a>
             </div>
             <div class="column theRight2">
-                <br>
-                <br>
-                <br>
+                <br><br><br>
+                <span class="condenseHelp">
+                <b><font color="red">Don't know to condense text? Start Here</font></b>
+                    <div class="condenseText">
+                        <ol>
+                            <li>What is the most important information?</li>
+                            <li>Which regions on the card are the most important to know?</li>
+                            <li>What information is unique to this card?</li>
+                            <li>Summarize the information as a last resort</li>
+                        </ol>
+                    </div>
+                </span>
                 <center><font color="blue">Verify text matches card text, if not edit it. <br>
-                    Then press Generate Label when text is correct.&#8595;</font></center>
-                <textarea id="textFromCard" name="textFromCard" rows="10" cols="45" maxlength="300">{{text}}</textarea>
+                    &#8595;Then press Generate Label when text is correct.&#8595;</font></center>
+                <textarea id="textFromCard" name="textFromCard" rows="10" maxlength="750" style="width:100%">{{text}}</textarea>
                 <div id="the-count">
                     Character Limit: <span id="current">0</span>
-                    <span id="maximum">/ 160</span>
+                    <span id="maximum">/ 80</span>
                 </div>
                 <div class="buttonGroup">
-                    <button id="printLabel">Generate Label</button>
-                    <a href="{{ url_for('cardPreview') }}"><button id="finishedPrinting">Done</button></a>
-                </div>
+                    <button style="width:40%;" id="printLabel">Generate Label</button>
+                </div><br><br><br>
+                <a href="{{ url_for('theChecklist') }}"><button style="width:100%;" id="finishedPrinting">Finished</button></a>
             </div>
         </div>
     </main>
     <script>
+        window.onload = function () {
+            var characterCount = document.getElementById("textFromCard").value.length;
+            current = $('#current'),
+            maximum = $('#maximum'),
+            theCount = $('#the-count');
 
+            current.text(characterCount);
+
+            if (characterCount <= 55) {
+                maximum.css('color', '#00cc00');
+                current.css('color', '#00cc00');
+                theCount.css('font-weight','normal');
+            }
+            else if (characterCount <= 80 && characterCount > 55) {
+                maximum.css('color', '#ff9900');
+                current.css('color', '#ff9900');
+                theCount.css('font-weight','normal');
+            }
+            else {
+                maximum.css('color','#ff3300');
+                current.css('color','#ff3300');
+                theCount.css('font-weight','bold');
+                alert("The text is too long. Please condense.");
+            }
+        }
+        function checkLabels() {
+            $.ajax({
+               url: "/getLabelNums",
+               type: "POST",
+                success: function(num) {
+                    console.log(num);
+                    document.getElementById('labelCounter').innerHTML = num;
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
+        }
+        var dropdown = document.getElementById("templateNames");
         $('#printLabel').click(function(){
+            current = $('#current');
             var charLimit = document.getElementById("current").textContent;
+            var tempNames = document.getElementById("templateNames");
+            var image = document.getElementById("theImagetoBePrinted").nameProp;
+            //var filename = image.replace(/^.*[\\\/]/, '');
+            //alert(filename);
 
-            if (charLimit > 160){
+            if (charLimit > 80){
                 alert("The text is too long. Please condense to generate Braille label.");
             } else {
                 var theText = document.getElementById("textFromCard").value;
                 $.ajax({
                     type: "POST",
-                    url: "{{ url_for("saveLabel") }}",
+                    url: "/saveLabel",
                     contentType: "application/json",
                     data: JSON.stringify(theText),
                     dataType: "json",
                     success: function(num) {
-                        console.log(num);
-                        document.getElementById("labelCounter").textContent = num + 1;
+                        document.getElementById('labelCounter').innerHTML = num + 1;
+                        document.getElementById('textFromCard').value = "";
+                        document.getElementById('theImagetoBePrinted').src = "static/orange.png";
                     },
                     error: function(err) {
                         console.log(err);
                     }
                 });
+                current.text("0");
             }
         });
 
@@ -107,7 +152,7 @@
         };
         }
         var textContent = document.getElementById("textFromCard");
-        var showWordCount   = document.getElementById("countWord");
+        var showWordCount = document.getElementById("countWord");
         textContent.addEventListener("input", function(){
           var v = count_word( this.value );
 
@@ -115,9 +160,9 @@
 
         function showImage(){
             var image = document.getElementById("theImagetoBePrinted");
-            var dropdown = document.getElementById("templateNames");
             image.src = 'static/newCards/' + dropdown.value;
             document.getElementById("printInfo").submit();
+            //dropdown.remove(dropdown.selectedIndex);
         };
 
         function saveAlert(msg, myYes) {
@@ -144,20 +189,18 @@
         }
 
         $('#finishedPrinting').click(function(){
-            $.ajax({
-               url: "{{ url_for ('generateCardPDF') }}",
-               type: "GET",
-               success: function(response) {
-               },
-              error: function(xhr) {
-                //Do Something to handle error
-              }
-            });
-        });
-
-        $('#finishedPrinting').click(function(){
             var isDone = confirm("Are you finished generating all labels?\nSelect OK to continue or Cancel to keep generating labels.");
             if(isDone){
+                $.ajax({
+                    url: "/generateCardPDF",
+                    type: "GET",
+                    success: function(response) {
+                        console.log(response);
+                    },
+                    error: function(err) {
+                        console.log(err);
+                    }
+                });
                 return true;
             }else {
                 return false;
@@ -165,8 +208,17 @@
         });
 
         $('#toScan').click(function(){
-            var isDone = confirm("Are you sure you want to scan more cards?\nSelect OK to continue or Cancel to keep taking pictures.");
+            var isDone = confirm("Are you sure you want to upload more cards?\nSelect OK to continue or Cancel to keep creating labels.");
             if(isDone){
+                $.ajax({
+                   url: "/generateCardPDF",
+                   type: "GET",
+                   success: function(response) {
+                   },
+                  error: function(xhr) {
+                    //Do Something to handle error
+                  }
+                });
                 return true;
             }else {
                 return false;
@@ -192,28 +244,36 @@
         });
 
         $('textarea').keyup(function() {
-
-        var characterCount = $(this).val().length,
-          current = $('#current'),
-          maximum = $('#maximum'),
-          theCount = $('#the-count');
+            var characterCount = $(this).val().length,
+            current = $('#current'),
+            maximum = $('#maximum'),
+            theCount = $('#the-count');
 
             current.text(characterCount);
 
-            if (characterCount <= 60) {
-            maximum.css('color', '#00cc00');
-            current.css('color', '#00cc00');
-            theCount.css('font-weight','normal');
+            if (characterCount <= 55) {
+                maximum.css('color', '#00cc00');
+                current.css('color', '#00cc00');
+                theCount.css('font-weight','normal');
+            }else if (characterCount <= 80 && characterCount > 55) {
+                maximum.css('color', '#ff9900');
+                current.css('color', '#ff9900');
+                theCount.css('font-weight','normal');
+            }  else {
+                maximum.css('color','#ff3300');
+                current.css('color','#ff3300');
+                theCount.css('font-weight','bold');
             }
-            else if (characterCount <= 130 && characterCount > 60) {
-            maximum.css('color', '#ff9900');
-            current.css('color', '#ff9900');
-            theCount.css('font-weight','normal');
+        });
+
+
+        $('#showLabels').click(function(){
+            var x = document.getElementById("currLabelInfo");
+            if (x.style.display === "block") {
+                x.style.display = "none";
             } else {
-            maximum.css('color','#ff3300');
-            current.css('color','#ff3300');
-            theCount.css('font-weight','bold');
-        }
+                x.style.display = "block";
+            }
         });
     </script>
     </body>

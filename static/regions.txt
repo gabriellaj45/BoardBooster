@@ -1,2 +1,0 @@
-Action.png TitleText:(34,10,366,48)
-action.png typeText:(143,345,258,366)

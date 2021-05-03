@@ -5,27 +5,31 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+        <!--<link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">-->
+        <link rel="stylesheet" type="text/css" href="/static/css/labelGen.css">
+        <link rel="shortcut icon" href="static/monopolyTactileOverlay2.ico">
+        <!--<link rel="shortcut icon" href="{{ url_for('static', filename='monopolyTactileOverlay2.ico') }}">-->
     </head>
     <header>
-        <br>
         <div class="theLeftHeader">
-            <a href="{{ url_for('index') }}"><button class="quitButton">QUIT</button></a>
+            <a href="/index"><button class="quitButton">QUIT</button></a>
         </div>
         <div class="theMiddleHeader">
+            <br>
             <b><u>Game:</u></b> {{cardGame}}
         </div>
         <div class="theRightHeader">
-            <a href="{{ url_for('createTemplate') }}"><button class="otherButton">GO BACK</button></a>
+            <a href="/theCards"><button class="otherButton">GO BACK</button></a>
         </div>
     </header>
     <body>
     <p class="directionsText">
-        Now, you will label the parts of the card for each different type of card.
-        You are creating a template of what the type of card would look like.
-        Think about it like making a blank template about where certain information should be for that type of card.<br><br>
-        <a href="{{ url_for('scanCards') }}"><button type="button" class="leftButton">GO BACK</button></a>
-        <a href="{{ url_for('newTemplate') }}"><button type="button" class="directionButton">OK</button></a>
+        Now, you will label the parts of the card for each different type of card.<br>
+        The different parts of the card combined create a a template of what that type of card looks like.<br>
+        Think about how many different types of cards are there?<br>
+        Think about it like creating a template about where certain information will be for that type of card.<br>
+        Where on that type of card are we expecting to find that information?<br><br>
+        <a href="/newTemplate"><button type="button" class="directionButton">OK</button></a>
     </p>
 
     </body>

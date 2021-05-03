@@ -1,0 +1,41 @@
+<!--https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_filter_list-->
+<html lang="en">
+    <head>
+        <title>BoardBooster</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='monopolyTactileOverlay2.ico') }}">
+    </head>
+    <header>
+        <a href="{{ url_for('index') }}"><button id="headerButton">QUIT</button></a>
+        <br>
+    </header>
+    <body>
+
+    <h1>Ways to Make Board Games Accessible</h1><br>
+    <div id="">
+        Here are the methods BoardBooster offers to add accessibility features to your board game:
+            <dl>
+                <dt><b>Braille Labels</b></dt>
+                    <dd>Add-on Braille labels that can be attached to the board, a card, or a game piece. This is  useful
+                        for players who prefer to read Braille.</dd>
+                <img src="static/unoBraille.jpeg" height="25%" alt="Uno Cards with Braille">
+                <figcaption>Here is an example of UNO cards with Braille on them to describe the card</figcaption>
+                <dt><b>Tactile Markers</b></dt>
+                <dd>Physical markers to identify different regions of the game or different game pieces.</dd>
+                <dd>These markers can be combined to create a tactile overlay, which covers the entire board</dd>
+                <img src="static/tactileOverlay.jpeg" height="25%" alt="Tactile Overlay for Chutes and Ladders">
+                <figcaption>Here is an example of a tactile overlay for Chutes and Ladders where the chutes and ladders were
+                raised so that they can be distinguished by touch</figcaption>
+            </dl>
+        Now we will go over the specifications of your game. <br><br>
+        <div class="buttonGroup">
+            <a href="{{ url_for('aboutAccessibility') }}"><button>BACK</button></a>
+            <a href="{{ url_for('gameSpecs') }}"><button>CONTINUE</button></a>
+        </div>
+    </div>
+    </body>
+</html>

@@ -1,8 +1,0 @@
-Tag Number, Description
-30,Trash a Treasure card from your hand
-30,Trash a Treasure card from your hand
-31,is a slippery slope
-30,Trash a Treasure card from your hand
-30,This is a test
-30,Witch +2 Cards Each other player gains a Curse card.
-31,Trash a Treasure card from your hand

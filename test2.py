@@ -1,52 +1,69 @@
-from cv2 import aruco
-import matplotlib.pyplot as plt
-import matplotlib as mpl
-from matplotlib.backends.backend_pdf import PdfPages
+'''
+from PIL import Image
 
-cardGame = 'Dominion'
-playerPieces = 4
-maxPieces = 4
-extraPieces = 25
-outputPDF = PdfPages('static/gamePieceMarkers.pdf')
-aruco_dict = aruco.Dictionary_get(aruco.DICT_4X4_250)
-fileTitle = cardGame + ' Game Piece Markers'
+im = Image.open('static/finalBoard.png')
 
-fig = plt.figure()
-plt.suptitle(fileTitle, fontsize=16, fontweight='bold')
+resizeIm = im.resize((6000, 6000))
 
-nx = int(playerPieces)
-ny = int(maxPieces)
-k = 1
-for i in range(1, int(maxPieces) + 1):
-    for j in range(1, int(playerPieces) + 1):
-        ax = fig.add_subplot(10, 10, k)
-        img = aruco.drawMarker(aruco_dict, i, 700)
-        plt.title(i, size=5, pad=5)
-        plt.imshow(img, cmap=mpl.cm.gray, interpolation="nearest")
-        ax.axis("off")
-        k = k + 1
-plt.subplots_adjust(hspace=1.5, wspace=0.4)
-outputPDF.savefig()
-if int(extraPieces) > 0:
-    fileTitle = cardGame + ' Additional Piece Markers'
+resizeIm.save('finalBoardTest.png')
+'''
+import cv2
+import re
+from collections import OrderedDict
 
-    fig = plt.figure()
-    plt.suptitle(fileTitle, fontsize=16, fontweight='bold')
+finalText = ''
+templateName = 'Action.png'
+theImage = cv2.imread('static/newCards/0.png')
+allRegionCoors = {}
+f = open("static/userData/regions.txt", "r")
+f1 = f.readlines()
 
-    if int(extraPieces) % 2 == 0:
-        nx = int(int(extraPieces) / 2)
-        ny = int(int(extraPieces) / 2)
-    else:
-        nx = int(int(extraPieces) / 2) + 1
-        ny = int(int(extraPieces) / 2) + 1
-    newID = int(maxPieces) + 1
-    for i in range(1, int(extraPieces) + 1):
-        ax = fig.add_subplot(10, 10, i)
-        img = aruco.drawMarker(aruco_dict, newID, 700)
-        plt.title(newID, size=5, pad=5)
-        plt.imshow(img, cmap=mpl.cm.gray, interpolation="nearest")
-        ax.axis("off")
-        newID = newID + 1
-    plt.subplots_adjust(hspace=1.5, wspace=0.4)
-    outputPDF.savefig()
-outputPDF.close()
+for x in f1:
+    line = re.split('\s', x)
+    for name in line[1:]:
+        regionNames = []
+        name = re.sub(':', ' ', name)
+        labelName = re.split('\s', name)
+        if line[0] == templateName and len(labelName) > 1:
+            labelName[1] = re.sub('\(', '', labelName[1])
+            labelName[1] = re.sub('\)', '', labelName[1])
+            labelName[1] = re.sub(',', ' ', labelName[1])
+            regionNames.append(labelName[1])
+            regionNames = list(filter(lambda a: a != '', regionNames))
+            regionCoors = re.split('\s', regionNames[0])
+            x, y, w, h = regionCoors
+            regionCoors.append(labelName[0])
+            midpoint = (int(x) + int(w)) / 2, (int(y) + int(h)) / 2
+            allRegionCoors[midpoint] = regionCoors
+
+allRegionCoors = OrderedDict(sorted(allRegionCoors.items(), key=lambda k: [k[1], k[0]]))
+
+for regionName, regionCoors in allRegionCoors.items():
+    tempX = 0
+    tempW = 0
+    tempY = 0
+    tempH = 0
+    x, y, w, h, _ = regionCoors
+    if int(h) < int(y):
+        tempX = x
+        tempW = w
+        w = x
+        x = tempW
+        tempY = y
+        tempH = h
+        h = y
+        y = tempH
+    elif int(x) > int(w):
+        tempX = x
+        tempW = w
+        w = x
+        x = tempW
+        tempY = y
+        tempH = h
+        h = y
+        y = tempH
+    elif int(x) == int(w):
+        continue
+    elif int(y) == int(h):
+        continue
+    croppedImage = theImage[int(y):int(h), int(x):int(w)]

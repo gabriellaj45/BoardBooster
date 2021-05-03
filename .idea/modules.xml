@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/LabelGenWebv3.iml" filepath="$PROJECT_DIR$/.idea/LabelGenWebv3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/BoardBooster.iml" filepath="$PROJECT_DIR$/.idea/BoardBooster.iml" />
     </modules>
   </component>
 </project>

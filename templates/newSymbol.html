@@ -10,16 +10,17 @@ https://jsfiddle.net/richardcwc/ukqhf54k/-->
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='monopolyTactileOverlay2.ico') }}">
     </head>
     <header>
         <div class="theLeftHeader">
-            <button class="quitButton" id="toQuit">QUIT</button>
+            <a href="{{ url_for('index') }}"><button class="quitButton">QUIT</button></a>
         </div>
         <div class="theMiddleHeader">
             <b><u>Game:</u></b> {{cardGame}}
         </div>
         <div class="theRightHeader">
-            <button class="otherButton" id="toRetake">RETAKE PICTURE</button>
+            <a href="{{ url_for('symbolDirections') }}"><button class="otherButton">GO BACK</button></a>
         </div>
     </header>
     <body>
@@ -28,59 +29,76 @@ https://jsfiddle.net/richardcwc/ukqhf54k/-->
         <br>
         <div class="row">
             <div class="column left">
-                <font color="red">1. Draw regions around symbols on the image&#8595;&#8595;&#8595;</font>
-                <br>
-                <!--
-                <div class="dialogBox" id="finish">
-                    <div class="message">Are you finished labeling all new symbols on this card?</div>
+                <div class="column left" style="width:25%;">
+                    <h2>Select a card to label</h2>
+                    <form id="cardInfo" action="" method="POST">
+                        <select id="templateNames" name="templateNames" size="7" onChange="showImage()" style="width: 100px;">
+                            {%for i in range(0, templateLen)%}
+                                <option value="{{templateNames[i]}}">{{templateNames[i]}}</option>
+                            {%endfor%}
+                        </select>
+                    </form>
                     <br>
-                    <a href="{{ url_for('scanCards') }}"><button class="yes">Yes</button></a>
-                    <button class="no">No</button>
+                    <a href="/cardUpload"><button style="width:100%">Upload More Cards</button></a>
                 </div>
-                <div class="dialogBox" id="quit">
-                    <div class="message">Are you sure you want to quit labeling the symbols on this card?</div>
+                <div class="column right" id="theCard" style="width: 75%;">
+                    <font color="red">1. Draw regions around symbols on the image&#8595;&#8595;&#8595;</font>
                     <br>
-                    <a href="{{ url_for('scanCards') }}"><button class="quit">Quit</button></a>
-                    <button class="cancel">Cancel</button>
+                    <!--
+                    <div class="dialogBox" id="finish">
+                        <div class="message">Are you finished labeling all new symbols on this card?</div>
+                        <br>
+                        <a href="{{ url_for('theCards') }}"><button class="yes">Yes</button></a>
+                        <button class="no">No</button>
+                    </div>
+                    <div class="dialogBox" id="quit">
+                        <div class="message">Are you sure you want to quit labeling the symbols on this card?</div>
+                        <br>
+                        <a href="{{ url_for('theCards') }}"><button class="quit">Quit</button></a>
+                        <button class="cancel">Cancel</button>
+                    </div>
+                    <div class="dialogBox" id="retake">
+                        <div class="message">Are you sure you want to retake the picture of this card?</div>
+                        <br>
+                        <a href="{{ url_for('theCards') }}"><button class="quit">Retake</button></a>
+                        <button class="cancel">Cancel</button>
+                    </div>-->
+                    <img src="" id="theImagetoLabel" alt="Image to Be Labeled">
+                    <canvas id="canvas" width="400" height="400"></canvas>
+                    <div class="buttonGroup">
+                        <button id="undoSymbols">Undo Last Saved Symbols</button>
+                        <button id="showSymbols">Show Symbols Created</button>
+                        <form id="regionRefresh">
+
+                        </form>
+                    </div>
                 </div>
-                <div class="dialogBox" id="retake">
-                    <div class="message">Are you sure you want to retake the picture of this card?</div>
-                    <br>
-                    <a href="{{ url_for('scanCards') }}"><button class="quit">Retake</button></a>
-                    <button class="cancel">Cancel</button>
-                </div>-->
-                <form id="cardInfo" action="" method="POST">
-                    <select id="templateNames" name="templateNames" onChange="showImage()">
-                        <option value="Select a card to label">Select a card to label</option>
-                        {%for i in range(0, templateLen)%}
-                            <option value="{{templateNames[i]}}">{{templateNames[i]}}</option>
-                        {%endfor%}
-                    </select>
-                </form>
-                <img src="" id="theImagetoLabel" alt="Image to Be Labeled">
-                <canvas id="canvas" width="400" height="400"></canvas>
+
             </div>
             <div class="column right" id="rightDiv">
                 <br><br>
-                <font color="red">2. Fill out form below. All fields required.</font><br>
+                <font color="red">2. Answer question below. All fields required.</font><br>
                 <div id="">
                     <form id="symbolInfo" action="" method="POST">
-                        <label for="symbolTemplateName">Card Name:</label>
-                        <input type="text" id="symbolTemplateName" name="symbolTemplateName" readonly> <br>
+                        <label for="symbolTemplateName" class="readOnlyFormElement">Card Name:</label>
+                        <input type="text" id="symbolTemplateName" name="symbolTemplateName" class="readOnlyFormElement" readonly>
                         <label>What is the text translation of this symbol?</label>
                         <input type="text" id="theSymbolName" name="theSymbolName" required> <br>
-                        <label for="symbolCoors">Coordinates:</label>
-                        <input type="text" id="symbolCoors" name="symbolCoors" readonly required>
-                        <input type="submit" name="save" value="Save Symbol" class="submitButton">
-                    </form>
-                    <p>
+                        <label for="symbolCoors" class="readOnlyFormElement">Coordinates:</label>
+                        <input type="text" id="symbolCoors" name="symbolCoors" class="readOnlyFormElement" readonly required>
+                        <p>
                         Preview Image of Symbol:<br>
                         <img src="static/smallOrange.png" id="symbolPreview" alt="Symbol Preview">
-                    </p>
-                    <a id="isDone" href="{{ url_for('remainingSymbols') }}"><button id="finishLabeling">Finished</button></a>
+                        </p>
+
+                    </form>
+                    <button class="submitButton" onclick="saveSymbolInfo()">Save Symbol</button>
+                    <a id="isDone" href="/printLabel"><button id="finishLabeling">Finished</button></a>
                 </div>
             </div>
         </div>
+        <object width="800" height="800" type="text/plain" data="static/userData/symbols.txt" border="0" id="currSymbolInfo">
+        </object>
         </main>
         <script>
 
@@ -117,7 +135,7 @@ https://jsfiddle.net/richardcwc/ukqhf54k/-->
                 coors = coors + ' ' + name;
                 $.ajax({
                     type: "POST",
-                    url: "{{ url_for("symbolPreview") }}",
+                    url: "/symbolPreview",
                     contentType: "application/json",
                     data: JSON.stringify(coors),
                     dataType: "json",
@@ -129,10 +147,10 @@ https://jsfiddle.net/richardcwc/ukqhf54k/-->
                     }
                 });
                 $.ajax({
-                   url: "{{ url_for ('symbolImage') }}",
+                   url: "/symbolImage",
                    type: "GET",
                    success: function(response) {
-                      $("#symbolPreview").attr('src', '/static/' + response);
+                      $("#symbolPreview").attr('src', '/static/userData/' + response);
                    },
                   error: function(xhr) {
                     //Do Something to handle error
@@ -226,6 +244,57 @@ https://jsfiddle.net/richardcwc/ukqhf54k/-->
                 var dropdown = document.getElementById("templateNames");
                 image.src = 'static/newCards/' + dropdown.value;
             };
+
+            $('#showSymbols').click(function(){
+                var x = document.getElementById("currSymbolInfo");
+                if (x.style.display === "block") {
+                    x.style.display = "none";
+                } else {
+                    x.style.display = "block";
+                }
+            });
+
+
+            $('#undoSymbols').click(function(){
+                $.ajax({
+                   url: "/removeLastSymbol",
+                   type: "POST",
+                   success: function(response) {
+                      document.getElementById("regionRefresh").submit();
+                   },
+                  error: function(xhr) {
+                    //Do Something to handle error
+                  }
+                });
+            });
+
+            function saveSymbolInfo() {
+                var x = document.getElementById("symbolInfo");
+                var image = document.getElementById("symbolPreview");
+                var txt = "";
+                var title = x.elements[0].value;
+                var i;
+                for (i = 0; i < x.length; i++) {
+                    txt = txt + x.elements[i].value + "\t";
+                }
+                console.log(txt);
+                $.ajax({
+                    type: "POST",
+                    url: "/saveCardSymbols",
+                    contentType: "application/json",
+                    data: JSON.stringify(txt),
+                    dataType: "json",
+                    success: function(response) {
+                        console.log(response);
+                    },
+                    error: function(err) {
+                        console.log(err);
+                    }
+                });
+                x.reset();
+                image.src = 'static/smallOrange.png';
+                x.elements[0].value = title;
+            }
 
         </script>
     </body>

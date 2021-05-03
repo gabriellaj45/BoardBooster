@@ -10,131 +10,167 @@ https://www.tutorialspoint.com/How-to-design-a-custom-alert-box-using-JavaScript
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='monopolyTactileOverlay2.ico') }}">
     </head>
     <header>
-        <br>
-        <a href="{{ url_for('index') }}"><button id="headerButton">QUIT</button></a>
+        <div class="theLeftHeader1" id="theHeader">
+            <a href="{{ url_for('index') }}"><button class="quitButton">QUIT</button></a>
+        </div>
+        <div class="theRightHeader1">
+            <a href="{{ url_for('theCards') }}"><button class="otherButton">GO BACK</button></a>
+        </div>
     </header>
     <body>
         <audio id="myAudio">
-          <source src="cameraClick.mp3" type="audio/mpeg">
+          <source src="static/cameraClick.mp3" type="audio/mpeg">
         </audio>
-        <h1>Scanning Cards</h1>
+        <h1>SCAN CARDS</h1>
         <div class="theLeft3">
-            <span class="imageHelp">
-            <font color="red">Need Help?</font>
-            <div class="imageHelpText">
-                Image Should Look Something Like This
-                <br>
-                <img src="static/action.jpg">
-            </div>
-        </span>
+            <b>Game:</b> {{cardGame}}
         </div>
         <div class="theMiddle3">
-            <span id="firstStep">
-                <font color="red"><h2>Save image when the quality is at its best, when the system says good</h2></font>
-            </span>
-            <span id="secondStep">
-            <font color="green"><h2>If image is good, take picture of another type of card. If not, discard</h2></font>
-        </span>
+            <font color="red"><b><u>Press Enter to take a picture when your card is fully outlined</u></b></font>
         </div>
         <div class="theRight3">
             <b>Cards Scanned:</b> <span id="cardCounter"> 0 </span>
-
         </div>
-        <img height="400" src="{{ url_for('videoFeed') }}">
-        <img src="" id="theImage" alt="The Perfect Image">
-        <br>
-        <div class="buttonGroup">
-            <button type="button" id="thePic" onclick="showInstructions()">Take Picture</button>
-            <button type="button" id="theDiscard" onclick="changeInstructions()">Discard Picture</button>
-            <a id="isDone" href="{{ url_for('cardParts') }}"><button>Done</button></a>
+<!--
+        <div class="dialogBox" id="confirm">
+            <div class="message">Do you want to save the scanned cards for later?</div>
+            <br>
+            <button class="save">Save</button>
+            <a href="{{ url_for('index') }}"><button class="noSave">Don't Save</button></a>
+            <button class="cancel">Cancel</button>
         </div>
-
+        <div class="promptBox" id="session">
+         <label class="message">Save Scan Session As:</label>
+         <input type="text" id="sessionName" class="message">
+         <br>
+            <a href="{{ url_for('index') }}"><button class="saveSession" onclick="saveSession();">Save</button></a>
+         <button class="cancel" onclick="cancelSession();">Cancel</button>
+        </div>
+        <div class="dialogBox" id="wrongGame">
+            <div class="message">Are you trying to label {{cardGame}}?</div>
+            <br>
+            <button class="yes">Yes</button>
+            <a href="{{ url_for('index') }}"><button class="no">No</button></a>
+        </div>
+        <div class="dialogBox" id="finish">
+            <div class="message">Are you finished scanning all the cards?</div>
+            <br>
+            <a href="{{ url_for('printLabel') }}"><button class="yes">Yes</button></a>
+            <button class="no">No</button>
+        </div>-->
+        <img class="soloImage" height="90%" src="{{ url_for('videoFeed') }}" alt="Camera Feed">
+        <a id="isDone" href="printLabel"><button id="finishLabeling">Finished Scanning</button></a>
+        <!--<div class="buttonGroup">
+            <button type="button" id ="thePic">Take Picture</button>
+            <select id="cardInfo" name="cardInfo" onChange="findInfo()">
+                <option value="info">Select Card Information</option>
+                <option value="color">Get Card Color</option>
+                <option value="category">Get Card Category</option>
+                <option value="text">Get Card Text</option>
+            </select>
+        </div>-->
         <script>
         var cardScanned = 0;
         document.addEventListener('keydown', logKey);
 
         function logKey(e) {
             if(e.code == 'Enter') {
-                $.ajax({
-                   url: "{{ url_for ('getImage') }}",
-                   type: "GET",
-                   success: function(response) {
-                      $("#theImage").attr('src', '/static/' + response);
-                   },
-                  error: function(xhr) {
-                    //Do Something to handle error
-                  }
-                });
-
-                $.ajax({
-                   url: "{{ url_for ('saveImage') }}",
-                  error: function(xhr) {
-                    //Do Something to handle error
-                  }
-                });
                 cardScanned++;
-                showInstructions();
+                $.ajax({
+                   url: "/saveImage",
+                  error: function(xhr) {
+                    //Do Something to handle error
+                  }
+                });
                 document.getElementById("cardCounter").textContent = cardScanned;
             }
         }
-        function showInstructions() {
-            document.getElementById("secondStep").style.display = 'inline';
-            document.getElementById("firstStep").style.display = 'none';
+
+        function saveAlert(msg, myYes) {
+            var confirmBox = $("#confirm");
+            var sessionBox = $("#session");
+            confirmBox.find(".message").text(msg);
+            confirmBox.find(".save").unbind().click(function() {
+                confirmBox.hide();
+                sessionBox.show();
+            });
+            confirmBox.find(".cancel").unbind().click(function() {
+                confirmBox.hide();
+            });
+            confirmBox.find(".save").click(myYes);
+            confirmBox.show();
         }
 
-        function changeInstructions() {
-            document.getElementById("secondStep").style.display = 'none';
-            document.getElementById("firstStep").style.display = 'inline';
+         function finishAlert(msg, myYes) {
+            var finishBox = $("#finish");
+            finishBox.find(".message").text(msg);
+            finishBox.find(".no").unbind().click(function() {
+               finishBox.hide();
+            });
+            finishBox.find(".yes").click(myYes);
+            finishBox.show();
+         }
+
+         function changeGame(msg, myYes) {
+            var wrongBox = $("#wrongGame");
+            wrongBox.find(".message").text(msg);
+            wrongBox.find(".yes").unbind().click(function() {
+               wrongBox.hide();
+            });
+            wrongBox.find(".yes").click(myYes);
+            wrongBox.show();
+         }
+
+        function saveSession() {
+            var sessionBox = $("#session");
+            var theText = document.getElementById("sessionName").value;
+            console.log(theText);
+            document.getElementById("sessionName").value = "";
+            sessionBox.hide();
         }
 
-        $('#thePic').click(function(){
-            cardScanned++;
-            $.ajax({
-               url: "{{ url_for ('getImage') }}",
-               type: "GET",
-               success: function(response) {
-                  $("#theImage").attr('src', '/static/' + response);
-               },
-              error: function(xhr) {
-                //Do Something to handle error
-              }
-            });
-            $.ajax({
-               url: "{{ url_for ('saveImage') }}",
-               type: "GET",
-               success: function(response) {
+        function cancelSession() {
+            var sessionBox = $("#session");
+            var confirmBox = $("#confirm");
+            document.getElementById("sessionName").value = "";
+            confirmBox.show();
+            sessionBox.hide();
+        }
 
-               },
-              error: function(xhr) {
-                //Do Something to handle error
-              }
-            });
-            document.getElementById("cardCounter").textContent = cardScanned;
-        });
-        $('#theDiscard').click(function(){
-            cardScanned--;
-            $.ajax({
-               url: "{{ url_for ('discardImage') }}",
-               type: "GET",
-               success: function(response) {
-                   $("#theImage").attr('src', '');
-               },
-              error: function(xhr) {
-                //Do Something to handle error
-              }
-            });
-            document.getElementById("cardCounter").textContent = cardScanned;
-        });
         $('#isDone').click(function(){
-            var isDone = confirm("Are you finished taking pictures of the different type of cards?\nSelect OK to continue or Cancel to keep taking pictures.");
+            var isDone = confirm("Are you finished scanning all of your cards?\nSelect OK to continue " +
+            "or Cancel to keep taking scanning.");
             if(isDone){
                 return true;
             }else {
                 return false;
             }
         });
+
+        function findInfo(){
+            var info = document.getElementById("cardInfo").value;
+            if (info == 'color') {
+                $.getJSON('/getColor', function(data) {
+                  //do nothing
+                });
+                return false;
+            }
+            if (info == 'category') {
+                $.getJSON('/getType', function(data) {
+                  //do nothing
+                });
+                return false;
+            }
+            if (info == 'text') {
+                $.getJSON('/getText', function(data) {
+                  //do nothing
+                });
+                return false;
+            }
+        };
         </script>
     </body>
-</html></html>
+</html>

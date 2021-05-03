@@ -1,99 +1,70 @@
-<link rel="stylesheet" href="{{ url_for('static', filename='css/braille-small-3d.css') }}">
-<script src="{{url_for('static', filename='js/braille-tools.js')}}"></script>
-<script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
-<script src="{{url_for('static', filename='js/dragAndDrop.js')}}"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
-
-<style>
-    #container{
-    width:400px;
-    height:200px;
-}
-#rightcontainer{
-    width:300px;
-    height:200px;
-    background:gray;
-    color:#fff;
-    margin-left:110px;
-    padding:10px;
-}
-#leftmenu{
-    color:#fff;
-    background-color:green;
-    width:100px;
-    height:200px;
-    position:fixed;
-    left:0;
-    padding:10px;
-}
-
-button{
-    display:block;
-    height:20px;
-    margin-top:10px;
-    margin-bottom:10px;
-}
-.drag{
-  width:40px;
-  height:20px;
-  background-color:blue;
-  z-index:100000;
-  margin-top:10px;
-}
-</style>
-
-<button onclick="takeScreenShot()">Snapshot</button>
-<input id="txtBraille" type="text">
-        <button id="btnBraille" onclick="showBraille()">Show Braille</button>
-        <br><br>
-        <div id="newNodes">
-        <p id="myBraille">
-        </p>
+<!--https://stackoverflow.com/questions/58924015/how-to-display-image-in-flask-after-a-button-is-pressed
+https://stackoverflow.com/questions/59370905/flask-calling-python-function-that-return-image-on-button-onclick
+https://www.tutorialspoint.com/How-to-design-a-custom-alert-box-using-JavaScript
+https://buildcoding.com/upload-and-download-file-using-flask-in-python/#Download_File_in_Flask-->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Scan Board</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+         <script src="//cdnjs.cloudflare.com/ajax/libs/jspdf/1.4.1/jspdf.min.js"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+    </head>
+    <header>
+        <div class="theLeftHeader">
+            <a href="{{ url_for('index') }}"><button class="quitButton">QUIT</button></a>
         </div>
-<div id="container">
-    <div id="leftmenu">
-      Left Side
+        <div class="theMiddleHeader">
+            <b><u>Game:</u></b> {{cardGame}}
+        </div>
+        <div class="theRightHeader">
+            <a href="{{ url_for('theBoard') }}"><button class="otherButton">GO BACK</button></a>
+        </div>
+    </header>
+    <title>Download File</title>
+    <h1>Download File</h1>
+    <body class="body">
 
-    </div>
-    <div id="rightcontainer">
-    Right Side
-    </div>
-</div>
 
-<script>
-var idNum = 0;
 
-var takeScreenShot = function() {
-    html2canvas(document.getElementById("container"), {
-        allowTaint: true,
-        onrendered: function (canvas) {
-            var tempcanvas=document.createElement('canvas');
-            tempcanvas.width=350;
-            tempcanvas.height=350;
-            var context=tempcanvas.getContext('2d');
-            context.drawImage(canvas,0, 0, 350,350);
-            var link=document.createElement("a");
-            link.href=tempcanvas.toDataURL('image/jpg');   //function blocks CORS
-            link.download = 'screenshot.jpg';
-            link.click();
-        }
-    });
-}
+<canvas id="myCanvas" width="578" height="200"></canvas>
+<button id="download">download</button>
+        <script>
+            var theCanvas = document.getElementById("myCanvas");
+            //alert(theCanvas);
+            var context = theCanvas.getContext("2d");
 
-function showBraille() {
-	var message = document.getElementById("txtBraille").value;
-    var tag = document.createElement("p");
-    document.getElementsByTagName("p")[idNum].setAttribute("class", "braille drag-drop");
-    document.getElementsByTagName("p")[idNum].setAttribute("id", idNum);
-    document.getElementsByTagName("p")[idNum].setAttribute("style", "background-color: transparent");
-    document.getElementById(idNum).innerHTML = br.braille(message);
-    var element = document.getElementById("newNodes");
-    element.appendChild(tag);
-    idNum = idNum + 1;
-}
-</script>
+            context.fillStyle = "#FFFFFF";
+            context.fillRect(0, 0, theCanvas.width, theCanvas.height);
+
+// draw a blue cloud
+context.beginPath();
+context.moveTo(170, 80);
+context.bezierCurveTo(130, 100, 130, 150, 230, 150);
+context.bezierCurveTo(250, 180, 320, 180, 340, 150);
+context.bezierCurveTo(420, 150, 420, 120, 390, 100);
+context.bezierCurveTo(430, 40, 370, 30, 340, 50);
+context.bezierCurveTo(320, 5, 250, 20, 250, 50);
+context.bezierCurveTo(200, 5, 150, 20, 170, 80);
+context.closePath();
+context.lineWidth = 5;
+context.fillStyle = '#8ED6FF';
+context.fill();
+context.strokeStyle = '#0000ff';
+context.stroke();
+
+download.addEventListener("click", function() {
+    var pdf = new jsPDF('p', 'in', [11, 14]);
+    var width = pdf.internal.pageSize.getWidth();
+    var height = pdf.internal.pageSize.getHeight();
+
+    var imgData = theCanvas.toDataURL("image/jpeg", 1.0);
+    pdf.addImage(imgData, 'JPEG', 0, 0, width, height);
+    pdf.save("tactileOverlay.pdf");
+}, false);
+        </script>
+    </body>
+</html>

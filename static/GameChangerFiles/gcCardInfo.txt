@@ -1,4 +1,0 @@
-Tag Number, Description
-30, de
-31, de
-30,ERROR: Type in text from card. Unable to read

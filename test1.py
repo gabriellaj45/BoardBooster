@@ -1,56 +1,42 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+from fpdf import FPDF
 import os
-from zipfile import ZipFile
-import io
-import pathlib
-
-def getFilePaths(directory):
-    # initializing empty file paths list
-    file_paths = []
-
-    # crawling through directory and subdirectories
-    for root, directories, files in os.walk(directory):
-        for filename in files:
-            # join the two strings in order to form the full filepath.
-            filepath = os.path.join(root, filename)
-            file_paths.append(filepath)
-
-            # returning all file paths
-    return file_paths
+import re
 
 
-def generateGCZip():
-    '''
-    # path to folder which needs to be zipped
-    directory = 'static/GameChangerFiles'
+cardGame = 'Dominion'
+# save FPDF() class into
+# a variable pdf
+pdf = FPDF()
 
-    # calling function to get all file paths in the directory
-    file_paths = getFilePaths(directory)
-    print(file_paths)
-    # printing the list of all files to be zipped
-    for file_name in file_paths:
-        print(file_name)
+# Add a page
+pdf.add_page()
+pdf.set_font("Arial", size=30)
+pdf.multi_cell(200, 5, txt='Braille Labels for Cards\n\n', align='C')
+pdf.set_font("Arial", size=10)
+pdf.multi_cell(200, 5, txt='Cut out Braille labels and paste them onto the cards.\n\n', align='C')
+# set style and size of font
+# that you want in the pdf
+pdf.set_font("Arial", size=15)
+pdf.add_font('Braille', '', 'static/qbraille-regular.ttf', uni=True)
+# open the text file in read mode
+f = open("static/userData/cardInfo.txt", "r")
+index = 0
+# insert the texts in pdf
+for x in f:
+    if index > 0:
+        pdf.add_page()
+    theText = x.split(',')
+    x = x.replace(theText[0], '')
+    x = x.replace(',', ' ')
+    x = re.sub('[^A-Za-z0-9 ]+', '', x)
+    pdf.image(theText[0], x=None, y=None, w=20, h=25)
+    pdf.set_font("Arial", size=10)
+    pdf.multi_cell(200, 10, txt=x, align='C')
+    pdf.set_font('Braille', '', size=24)
+    pdf.multi_cell(70, 10, txt=x, align='C', border=1)
+    index += 1
 
-        # writing files to a zipfile
-    with ZipFile('gcFiles.zip', 'w') as zip:
-        # writing each file one by one
-        for file in file_paths:
-            zip.write(file)
-    '''
-    base_path = pathlib.Path('./static/GameChangerFiles')
-    data = io.BytesIO()
-    with ZipFile(data, mode='w') as z:
-        for f_name in base_path.iterdir():
-            z.write(f_name)
-    data.seek(0)
-    return send_file(
-        data,
-        mimetype='application/zip',
-        as_attachment=True,
-        attachment_filename='static/gameChangerFiles.zip'
-    )
-
-
-if __name__ == '__main__':
-    generateGCZip()
-
-
+# save the pdf with name .pdf
+pdf.output("static/userData/theCardsTest.pdf")

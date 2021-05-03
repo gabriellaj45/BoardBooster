@@ -151,7 +151,7 @@ class scanningCards:
         peri = cv2.arcLength(self.cardContour, True)
         approx = cv2.approxPolyDP(self.cardContour, 0.02 * peri, True)
         if len(approx) == 4:
-            system('say -v Samantha good')
+            # system('say -v Samantha good')
             h = np.array([[0, 0], [400, 0], [400, 400], [0, 400]], np.float32)
             approx = np.array([item for sublist in approx for item in sublist], np.float32)
             approx = self.order_points(approx)

@@ -1,0 +1,80 @@
+<!--https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_filter_list
+https://pythonise.com/series/learning-flask/flask-uploading-files
+https://flask.palletsprojects.com/en/1.1.x/patterns/fileuploads/-->
+<html lang="en">
+    <head>
+        <title>LabelGen</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <!--<link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">-->
+        <link rel="stylesheet" type="text/css" href="/static/css/labelGen.css">
+        <link rel="shortcut icon" href="static/monopolyTactileOverlay2.ico">
+        <!--<link rel="shortcut icon" href="{{ url_for('static', filename='monopolyTactileOverlay2.ico') }}">-->
+    </head>
+    <header>
+        <a href="/index"><button id="headerButton">QUIT</button></a>
+    </header>
+    <body>
+    <!--
+    <h1>Does {{cardGame}} have a board?</h1>
+    <br>
+    <div class="buttonGroup">
+        <button type="button" id ="boardYes" onclick="showStep()">Yes</button>
+        <a href="{{ url_for('gamePieces') }}"><button type="button" id ="boardNo">No</button></a>
+    </div>
+    <br><br>
+    -->
+    <!--
+    <div id="secondStep">
+        <h2 style="text-align: left;">Select the image of your board</h2>
+        <form action="/theBoard" method="POST" enctype="multipart/form-data">
+            <input type="file" id="boardImage" name="image">
+            <input type="submit" value="Upload" class="submitButton" onclick="return checkFile();">
+        </form>
+    </div>-->
+    <h1>Board Labels: {{cardGame}}</h1>
+    <div>
+        <h2>Board Braille Labels</h2>
+        <p>
+            You will create Braille labels to stick onto the board. When creating Braille labels, you want to make sure
+            all <i>important</i> text information on the board. Since labels may be larger than the original text, you
+            should think about what labels to include and how succinct they should be.
+        </p>
+        <center>
+            <img src="static/brailleClue.jpeg" height="40%" alt="Braille on board game Clue">
+            <figcaption>Example of Braille labels on the board game Clue. By each room name is the Braille translation
+            of that word</figcaption>
+        </center>
+        <label><b>Upload an image of your board</b></label> <br>
+        <form action="/theBoardBraille" method="POST" enctype="multipart/form-data">
+            <input type="file" id="myFile" name="board" required>
+            <input type="submit" class="submitButton" value="Upload" onclick="return checkFile();">
+        </form>
+        <br>
+        <div class="buttonGroup">
+            <a href="{{ url_for('theChecklist') }}"><button>BACK</button></a>
+            <a href="{{ url_for('boardBrailleAnnotation') }}"><button>Already uploaded image of board</button></a>
+        </div>
+    </div>
+    <script>
+        function showStep() {
+            document.getElementById("secondStep").style.display = "block";
+        }
+        function showNextStep() {
+            document.getElementById("thirdStep").style.display = "block";
+        }
+        function checkFile() {
+            var file = document.getElementById("boardImage");
+
+            if(file.files.length == 0 ){
+                alert('No file selected, please choose a file');
+                return false;
+            } else {
+                return true;
+            }
+        }
+    </script>
+    </body>
+</html>

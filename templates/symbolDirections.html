@@ -6,6 +6,7 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='monopolyTactileOverlay2.ico') }}">
     </head>
     <header>
         <br>
@@ -16,15 +17,15 @@
             <b><u>Game:</u></b> {{cardGame}}
         </div>
         <div class="theRightHeader">
-            <a href="{{ url_for('createTemplate') }}"><button class="otherButton">GO BACK</button></a>
+            <a href="{{ url_for('newTemplate') }}"><button class="otherButton">GO BACK</button></a>
         </div>
     </header>
     <body>
     <p class="directionsText">
-        Now, you will label the symbols on the card. (A symbol is an icon on the card. Not anything alphanumeric)<br><br>
+        Now, you will label the symbols on the card. (A symbol is an icon that has a textual equivalent on the card,
+        not including anything on the keyboard.)<br><br>
         <a href="{{ url_for('printLabel') }}"><button type="button" class="leftButton">NO SYMBOLS</button></a>
         <a href="{{ url_for('newSymbol') }}"><button type="button" class="directionButton">OK</button></a>
     </p>
-
     </body>
 </html>

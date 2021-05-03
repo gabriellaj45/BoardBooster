@@ -15,8 +15,13 @@ def matchTemplate(image):
         histClassifier.addModelHistogram(varName, filename)
         index = index + 1
 
+    if index == 0:
+        return
     image = cv2.imread(image)
-    return histClassifier.returnBestMatchName(image)
+    if image is not None:
+        return histClassifier.returnBestMatchName(image)
+    else:
+        print('no image')
 
 
 '''

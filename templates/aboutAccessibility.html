@@ -1,0 +1,44 @@
+<!--https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_filter_list-->
+<html lang="en">
+    <head>
+        <title>BoardBooster</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='monopolyTactileOverlay2.ico') }}">
+    </head>
+    <header>
+        <a href="{{ url_for('index') }}"><button id="headerButton">QUIT</button></a>
+        <br>
+    </header>
+    <body>
+
+    <h1>About Board Game Accessibility</h1>
+    <div id="">
+        <p id="centerText">
+            This purpose of BoardBooster is to identify and address common accessibility problems faced when playing board
+            games. Many different types of board game components are often inaccessible to blind players. <br>
+        </p>
+        Some common problems are:
+            <dl>
+                <dt><b>Instructions</b></dt>
+                    <dd>Verifying that your game's instructions are available in an accessible physical or digital format</dd>
+                <dt><b>Game Board</b></dt>
+                    <dd>Verifying that game board labels are readable and physical regions are defined</dd>
+                <dt><b>Game Pieces</b></dt>
+                    <dd>Verifying that game pieces can be identified by touch</dd>
+                <dt><b>Cards</b></dt>
+                    <dd>Verifying that cards have accessible labels</dd>
+                <dt><b>Dice or Spinners</b></dt>
+                    <dd>Choosing an accessible method for generating random results</dd>
+            </dl>
+
+        <div class="buttonGroup">
+            <a href="{{ url_for('index') }}"><button>BACK</button></a>
+            <a href="{{ url_for('accessWays') }}"><button>CONTINUE</button></a>
+        </div>
+    </div>
+    </body>
+</html>

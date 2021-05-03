@@ -1,0 +1,71 @@
+<!--https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_filter_list-->
+<html lang="en">
+    <head>
+        <title>BoardBooster</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='monopolyTactileOverlay2.ico') }}">
+    </head>
+    <header>
+        <div class="theLeftHeader1" id="theHeader">
+            <a href="{{ url_for('index') }}"><button class="quitButton">QUIT</button></a>
+        </div>
+        <div class="theRightHeader1">
+            <a href="{{ url_for('theChecklist') }}"><button class="otherButton">GO BACK</button></a>
+        </div>
+    </header>
+    <body>
+    <!--
+    <h1>Does {{cardGame}} have any game pieces/tokens?</h1>
+    <br>
+    <div class="buttonGroup">
+        <button type="button" id ="boardYes" onclick="showStep()">Yes</button>
+        <a href="{{ url_for('theCards') }}"><button type="button" id ="boardNo">No</button></a>
+    </div>
+    <br><br>-->
+    <div>
+        <h1>Fill out form below. All fields required.</h1>
+        <br>
+        <form id="diceInfo" action="" method="POST">
+            <!--
+            <label for="playerPieces"><b>How many pieces does each player get?</b></label>
+            <input type="number" id="playerPieces" name="playerPieces" step="1" required>
+            <br>
+            <label for="maxPieces"><b>What is the maximum number of players?</b></label>
+            <input type="number" id="maxPieces" name="maxPieces" step="1" required>
+            <br>
+            <b>Does {{cardGame}} have dice or a spinner?</b></label>
+            <input type="radio" id="diceYes" name="diceYesOrNo" value="yes" onclick="yesDice();" required>
+            <label for="diceYes">Yes</label>
+            <input type="radio" id="diceNo" name="diceYesOrNo" value="no" onclick="noDice();">
+            <label for="diceNo">No</label><br>
+            <div id="additionalQuestions">-->
+            <label for="minDice"><b>What is the minimum number on the dice/spinner?</b></label>
+            <input type="number" id="minDice" name="minDice" step="1">
+            <br>
+            <label for="maxDice"><b>What is the maximum number on the dice/spinner?</b></label>
+            <input type="number" id="maxDice" name="maxDice" step="1">
+            <!--
+            </div>
+            <label for="extraPieces"><b>How many additional pieces are there?</b> (Not including the dice/spinner)</label>
+            <input type="number" id="extraPieces" name="extraPieces" step="1" required>-->
+            <input type="submit" name="save" value="Submit" class="submitButton">
+        </form>
+    </div>
+    <script>
+    function showStep() {
+        document.getElementById("secondStep").style.display = "block";
+    }
+    function yesDice() {
+        document.getElementById("additionalQuestions").style.display = "block";
+    }
+
+    function noDice() {
+        document.getElementById("additionalQuestions").style.display = "none";
+    }
+    </script>
+    </body>
+</html>

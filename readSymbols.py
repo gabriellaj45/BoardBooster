@@ -50,18 +50,22 @@ def detectSymbols(file):
 
     for filename in os.listdir('static/cardSymbols/'):
         path = "static/cardSymbols/"
-        cardFile = path + filename
+        symbolFile = path + filename
 
-        symbolLookingFor = cv2.imread(cardFile, 0)
-        w, h = symbolLookingFor.shape[::-1]
-
+        symbolLookingFor = cv2.imread(symbolFile, 0)
+        symbolW, symbolH = symbolLookingFor.shape[::-1]
+        cardW, cardH = cardSearchingGray.shape[::-1]
+        if cardW < symbolW:
+            continue
+        if cardH < symbolH:
+            continue
         res = cv2.matchTemplate(cardSearchingGray, symbolLookingFor, cv2.TM_CCOEFF_NORMED)
 
         threshold = 0.9
         loc = np.where(res >= threshold)
         for pt in zip(*loc[::-1]):
-            symbolsFound.append((pt, (pt[0] + w, pt[1] + h)))
-            cv2.rectangle(cardSearchingGray, pt, (pt[0] + w, pt[1] + h), (0, 0, 255), 2)
+            symbolsFound.append((pt, (pt[0] + symbolW, pt[1] + symbolH)))
+            cv2.rectangle(cardSearchingGray, pt, (pt[0] + symbolW, pt[1] + symbolH), (0, 0, 255), 2)
     cv2.imwrite('symbolsTest.png', cardSearchingGray)
 
     return symbolsFound

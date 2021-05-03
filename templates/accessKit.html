@@ -7,19 +7,49 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/labelGen.css') }}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='monopolyTactileOverlay2.ico') }}">
     </head>
     <header>
-        <br>
-        <a href="{{ url_for('index') }}"><button id="headerButton">QUIT</button></a>
-        <br>
+        <div class="theLeftHeader" id="theHeader">
+            <a href="{{ url_for('index') }}"><button class="quitButton">QUIT</button></a>
+        </div>
+        <div class="theMiddleHeader">
+            <h1 style="font-size: 24px;"></h1>
+        </div>
+        <div class="theRightHeader">
+            <button class="otherButton" id="download" onclick="downloadFiles()">Download Files</button>
+        </div>
+
     </header>
     <body>
-
     <h1>Accessibility Kit for {{cardGame}}</h1>
-    <br>
-    <iframe src="{{url_for('static', filename ='accessibilityKit.pdf')}}">
+    <a href="{{ url_for('theChecklist') }}"><button type="button" id="goBack">GO BACK</button></a>
+    <a id="isDone" href="{{ url_for('index') }}"><button type="button" id="buttonDone">FINISHED</button></a>
+    <a href="{{ url_for('static', filename='userData/accessibilityKit.pdf') }}" download><button class="otherButton" id="theAccessKit">LASERCUT FILE</button></a>
+    <a href="{{ url_for('static', filename='finalFiles/lasercut.jpeg') }}" download><button class="otherButton" id="lasercut">LASERCUT FILE</button></a>
+    <iframe src="{{url_for('static', filename ='userData/accessibilityKit.pdf')}}">
     </iframe>
-    <a href="{{ url_for('cardPreview') }}"><button type="button" id ="goBack">GO BACK</button></a>
-    <a href="{{ url_for('gcFiles') }}"><button type="button" id ="gcFiles">Generate Game Changer Files</button></a>
+    <script>
+    function downloadFiles() {
+        //document.location.href = 'static/userData/accessibilityKit.pdf';
+        // document.location.href = 'static/finalFiles/lasercut.jpeg';
+        document.getElementById('lasercut').click();
+        document.getElementById('theAccessKit').click();
+
+    }
+
+        $('#isDone').click(function(){
+            $.ajax({
+               url: "/sendEmail",
+               type: "POST",
+               success: function(response) {
+                    alert('Email Sent');
+                },
+                error: function(xhr) {
+                    return false;
+                }
+            });
+        });
+    </script>
     </body>
 </html>

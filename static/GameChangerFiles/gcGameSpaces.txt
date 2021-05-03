@@ -1,6 +1,0 @@
-minNum,0,maxNum0
-Game Space Number,startX,endX,startY,endY
-1,0,696,78,771
-1,625,622,703,698
-1,469,82,539,150
-3,618,75,696,159
